@@ -2,38 +2,14 @@ import { html, css, LitElement, property, query } from 'lit-element';
 import { TreeItemArray } from './XofTree';
 
 export class XofTreeItem extends LitElement {
-  static styles =css`
-ul,
-ul li,
-ul ul li {
-   margin:0;
-   text-indent: 0;
-   list-style-type: none;
-}
-  .lbl-toggle::before {
-  content: ' ';
-  display: inline-block;
-
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 5px solid currentColor;
-
-  vertical-align: middle;
-  margin-right: .7rem;
-  transform: translateY(-2px);
-
-  transition: transform .2s ease-out;
-}
-.expanded.lbl-toggle::before {
-  transform: rotate(90deg) translateX(-3px);
-}
-  `;
 
   @property({type: String}) title = 'Hey there';
 
   @property({type: Boolean}) expanded = false;
 
   @property({type: Number}) tabIndex = -1;
+
+  @property({type: Boolean}) multiselect = false;
 
 
   @property({attribute: false}) data: TreeItemArray = [];
@@ -50,19 +26,26 @@ ul ul li {
 
 
   cssClassName() {
+    return "lbl";
+  }
+
+  cssExpanderClassName() {
     if (this.leaf()) {
-      return "lbl-leaf";
+      return "leaf";
     } else {
       if (this.expanded) {
-        return "lbl-toggle expanded";
+        return "expander expanded";
       } else {
-        return "lbl-toggle";
+        return "expander";
       }
     }
   }
 
   @query('#label')
   _label!: HTMLElement;
+
+  @query('#ms-checkbox')
+  _checkbox!: HTMLInputElement;
 
   focus() {
     this._label.focus();
@@ -84,15 +67,30 @@ ul ul li {
       child.focus();
     }
   }
+
+  toggleSelection() {
+    this._checkbox.checked = !this._checkbox.checked;
+  }
+
+  msClicked() {
+    /**
+     * send event item checked
+     */
+  }
+
   createRenderRoot() {
     return this;
   }
   render() {
     return html`
       <li role="treeitem" aria-expanded="${this.expanded}">
-        <span id="label" class="${this.cssClassName()}" @click=${this.clickHandler} tabindex=${this.tabIndex}>${this.title}</span>
+        <span id="label" class="${this.cssClassName()}" tabindex=${this.tabIndex}>
+        <span @click=${this.clickHandler} class="${this.cssExpanderClassName()}"></span>
+        ${(this.multiselect) ? html`<input type="checkbox" id="ms-checkbox" @click=${this.msClicked}/>` : html`` }
+        ${this.title}
+      </span>
         ${(this.leaf() || !this.expanded) ? html`` : html`<ul id="list" role="group">
-          ${this.data.map(item => html`<xof-tree-item .title=${item.name} .data=${item.children} .expanded=${item.expanded}></xof-tree-item>`)}
+          ${this.data.map(item => html`<xof-tree-item .title=${item.name} .data=${item.children} .expanded=${item.expanded} .multiselect=${this.multiselect}></xof-tree-item>`)}
         </ul>`}
       </li>
     `;

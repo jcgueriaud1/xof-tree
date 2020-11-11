@@ -19,7 +19,7 @@ export class XofTree extends LitElement {
       text-indent: 0;
       list-style-type: none;
     }
-      .lbl-toggle::before {
+      .expander {
       content: ' ';
       display: inline-block;
 
@@ -33,9 +33,13 @@ export class XofTree extends LitElement {
 
       transition: transform .2s ease-out;
     }
-    .expanded.lbl-toggle::before {
+    .leaf.expander {
+      content: none;
+    }
+    .expanded.expander {
       transform: rotate(90deg) translateX(-3px);
     }
+
   `;
 
   @property({type: String}) title = 'Hey there';
@@ -45,6 +49,8 @@ export class XofTree extends LitElement {
   @property({type: Boolean}) initialized = false;
 
   @property({attribute: false}) focusedItem = null;
+
+  @property({type: Boolean}) multiselect = false;
 
  // First argument is the slot name
   // Second argument is `true` to flatten the assigned nodes.
@@ -116,6 +122,12 @@ export class XofTree extends LitElement {
                 this.navigateToParentItem(treeitem);
               }
               break;
+
+          case " ":
+              if (this.multiselect) {
+                treeitem.toggleSelection();
+              }
+              break;
       default:
         break;
     }
@@ -152,7 +164,6 @@ export class XofTree extends LitElement {
       console.log("first child");
       treeitem.closest('element-x');
       const parent = ((treeitem.getRootNode() as ShadowRoot).host as XofTreeItem);
-      debugger;
       if (!(parent instanceof XofTree)) {
         parent.focus();
       } else {
@@ -210,7 +221,7 @@ function activate(item) {
     return html`
     <h3 id="tree_label">${this.title}</h3>
     ${this.leaf() ? html`` : html`<ul role="tree" id="tree" aria-labelledby="tree_label">
-    ${this.data.map(item => html`<xof-tree-item .title=${item.name} .data=${item.children} .expanded=${item.expanded}></xof-tree-item>`)}
+    ${this.data.map(item => html`<xof-tree-item .title=${item.name} .data=${item.children} .expanded=${item.expanded} .multiselect=${this.multiselect}></xof-tree-item>`)}
     </ul>`}
 
     `;

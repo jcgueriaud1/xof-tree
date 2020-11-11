@@ -16,12 +16,12 @@
     import '../dist/xof-tree.js';
     import '../dist/xof-tree-item.js';
     import * as JSON from './test-data.js';
-    debugger;
     const title = 'Hello owc Worldsdsdsd!';
+    const multiselect = false;
 
     render(
       html`
-        <xof-tree .title=${title} .data=${JSON.default.DATA}>
+        <xof-tree .title=${title} .data=${JSON.default.DATA} .multiselect=${multiselect}>
           some more light-dom
         </xof-tree>
       `,
