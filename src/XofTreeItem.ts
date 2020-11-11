@@ -1,4 +1,4 @@
-import { html, css, LitElement, property } from 'lit-element';
+import { html, css, LitElement, property, query } from 'lit-element';
 import { TreeItemArray } from './XofTree';
 
 export class XofTreeItem extends LitElement {
@@ -33,6 +33,8 @@ ul ul li {
 
   @property({type: Boolean}) expanded = false;
 
+  @property({type: Number}) tabIndex = -1;
+
 
   @property({attribute: false}) data: TreeItemArray = [];
 
@@ -59,11 +61,37 @@ ul ul li {
     }
   }
 
+  @query('#label')
+  _label!: HTMLElement;
+
+  focus() {
+    this._label.focus();
+    this.tabIndex = 0;
+  }
+
+  @query('#list')
+  _list!: HTMLElement;
+
+  focusFirstChild() {
+    (this._list.firstElementChild as XofTreeItem).focus();
+  }
+
+  focusLastChild() {
+    const child = (this._list.lastElementChild as XofTreeItem);
+    if (child.expanded) {
+      child.focusLastChild();
+    } else {
+      child.focus();
+    }
+  }
+  createRenderRoot() {
+    return this;
+  }
   render() {
     return html`
       <li role="treeitem" aria-expanded="${this.expanded}">
-        <span class="${this.cssClassName()}" @click=${this.clickHandler}>${this.title}</span>
-        ${(this.leaf() || !this.expanded) ? html`` : html`<ul role="group">
+        <span id="label" class="${this.cssClassName()}" @click=${this.clickHandler} tabindex=${this.tabIndex}>${this.title}</span>
+        ${(this.leaf() || !this.expanded) ? html`` : html`<ul id="list" role="group">
           ${this.data.map(item => html`<xof-tree-item .title=${item.name} .data=${item.children} .expanded=${item.expanded}></xof-tree-item>`)}
         </ul>`}
       </li>

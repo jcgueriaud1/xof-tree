@@ -2,17 +2,26 @@ import { html, fixture, expect } from '@open-wc/testing';
 
 import {XofTree} from '../src/XofTree.js';
 import '../xof-tree.js';
-/*
+
+import * as JSON from '../test/test-data.js';
+import * as JSONSMALL from '../test/test-small-data.js';
+
 describe('XofTree', () => {
   it('has a default title "Hey there" and counter 5', async () => {
     const el: XofTree = await fixture(html`
-      <xof-tree></xof-tree>
+      <xof-tree .data=${JSON.default.DATA}></xof-tree>
     `);
-
-    expect(el.title).to.equal('Hey there');
-    expect(el.counter).to.equal(5);
+    expect(el.initialized).to.equal(true);
+    await expect(el).shadowDom.to.be.accessible();
   });
-
+  it('has a default title "Hey there" and counter 5', async () => {
+    const el: XofTree = await fixture(html`
+      <xof-tree .data=${JSONSMALL.default.DATA}></xof-tree>
+    `);
+    expect(el.initialized).to.equal(true);
+    await expect(el).shadowDom.to.be.accessible();
+  });
+/*
   it('increases the counter on button click', async () => {
     const el: XofTree = await fixture(html`
       <xof-tree></xof-tree>
@@ -36,6 +45,5 @@ describe('XofTree', () => {
     `);
 
     await expect(el).shadowDom.to.be.accessible();
-  });
+  });*/
 });
-*/
