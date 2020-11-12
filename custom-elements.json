@@ -3,7 +3,7 @@
   "tags": [
     {
       "name": "xof-tree",
-      "description": "A component with a title and an action counter",
+      "description": "A component to display a tree",
       "properties": [
         {
           "name": "title",
@@ -12,10 +12,16 @@
           "default": "Hey there"
         },
         {
-          "name": "counter",
-          "type": "Number",
-          "description": "An action counter",
-          "default": 0
+          "name": "multiselect",
+          "type": "Boolean",
+          "description": "Is tree in multiselect?",
+          "default": false
+        },
+        {
+          "name": "data",
+          "type": "TreeItemArray",
+          "description": "Is tree in multiselect?",
+          "default": []
         }
       ],
       "events": [],

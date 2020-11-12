@@ -65,6 +65,7 @@ export class XofTree extends LitElement {
       this.addEventListener('click', this.handleClick);
       this.addEventListener('keyup', this.handleKeyup);*/
       this.addEventListener('keydown', this.handleKeydown);
+      this.addEventListener('item-selected', this.handleItemSelectedE);
       this.initialized = true;
     }
     /*
@@ -73,6 +74,23 @@ export class XofTree extends LitElement {
     }
     */
     return this.initialized;
+  }
+
+  handleItemSelectedE(e1: Event) {
+    const e = (e1 as CustomEvent<{selected: boolean; item: XofTree}>);
+    if (e.detail.selected) {
+      console.log(e.detail.item + " selected");
+    } else {
+      console.log(e.detail.item + " deselected");
+    }
+  }
+
+  handleItemSelected(e: CustomEvent<{selected: boolean; item: XofTree}>) {
+    if (e.detail.selected) {
+      console.log(e.detail.item + " selected");
+    } else {
+      console.log(e.detail.item + " deselected");
+    }
   }
 
   leaf() {

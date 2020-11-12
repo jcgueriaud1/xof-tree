@@ -7,6 +7,7 @@ export default {
   component: 'xof-tree',
   options: { selectedPanel: "storybookjs/knobs/panel" },
 };
+
 ```
 
 # XofTree
@@ -29,20 +30,11 @@ yarn add xof-tree
 
 ```js
 import 'xof-tree/xof-tree.js';
+import 'xof-tree/xof-tree-item.js';
 ```
 
 ```js preview-story
 export const Simple = () => html`
   <xof-tree></xof-tree>
-`;
-```
-
-## Variations
-
-###### Custom Title
-
-```js preview-story
-export const CustomTitle = () => html`
-  <xof-tree title="Hello World"></xof-tree>
 `;
 ```
