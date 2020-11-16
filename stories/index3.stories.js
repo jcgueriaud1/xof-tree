@@ -5,6 +5,7 @@ import '../dist/xof-tree-item.js';
 export default {
   title: 'XofTree',
   component: 'xof-tree',
+  decorators: [withKnobs, withWebComponentsKnobs],
   includeStories: ['SimpleStory', 'MultiSelectStory'],
   options: { selectedPanel: "storybookjs/knobs/panel" },
 };

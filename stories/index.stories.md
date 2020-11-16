@@ -1,10 +1,11 @@
 ```js script
-import { html } from '@open-wc/demoing-storybook';
+import { html, withKnobs, withWebComponentsKnobs  } from '@open-wc/demoing-storybook';
 import '../dist/xof-tree.js';
 
 export default {
   title: 'XofTree',
   component: 'xof-tree',
+  decorators: [withKnobs, withWebComponentsKnobs],
   options: { selectedPanel: "storybookjs/knobs/panel" },
 };
 
