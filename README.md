@@ -2,6 +2,11 @@
 
 This webcomponent follows the [open-wc](https://github.com/open-wc/open-wc) recommendation.
 
+## Demo
+
+You can test the component here:
+[Netlify](https://xof-tree.netlify.app/?path=/story/xoftree--simple)
+
 ## Installation
 ```bash
 npm i xof-tree
