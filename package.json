@@ -19,11 +19,12 @@
     "test": "tsc && web-test-runner --coverage",
     "test:watch": "web-test-runner --watch",
     "storybook": "concurrently --kill-others --names tsc,storybook \"npm run tsc:watch\" \"start-storybook --node-resolve --watch --open\"",
-    "storybook:build": "build-storybook"
+    "storybook:build": "build-storybook",
+    "tach": "tach --browser=chrome-headless"
   },
   "dependencies": {
-    "lit-html": "^1.1.2",
-    "lit-element": "^2.2.1"
+    "lit-element": "^2.2.1",
+    "lit-html": "^1.1.2"
   },
   "devDependencies": {
     "@types/node": "13.11.1",
@@ -41,7 +42,8 @@
     "lint-staged": "^10.0.0",
     "@web/test-runner": "^0.7.41",
     "@open-wc/testing": "^2.0.0",
-    "@open-wc/demoing-storybook": "^2.0.0"
+    "@open-wc/demoing-storybook": "^2.0.0",
+    "tachometer": "^0.5.5"
   },
   "eslintConfig": {
     "extends": [

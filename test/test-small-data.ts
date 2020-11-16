@@ -24,33 +24,33 @@
 ] **/
 
 export default {
- DATA:[
-  {
-    "expanded": false,
-    "name": "Glenn",
-    "children": [
-      {
-        "expanded": false,
-        "name": "Morrow",
-        "children": [
-          {
-            "name": "Odonnell"
-          },
-          {
-            "name": "Solis"
-          },
-          {
-            "name": "Hansen"
-          },
-          {
-            "name": "Galloway"
-          },
-          {
-            "name": "Willis"
-          }
-        ]
-      }
-    ]
-  }
-]
-}
+  DATA: [
+    {
+      expanded: false,
+      name: 'Glenn',
+      children: [
+        {
+          expanded: false,
+          name: 'Morrow',
+          children: [
+            {
+              name: 'Odonnell',
+            },
+            {
+              name: 'Solis',
+            },
+            {
+              name: 'Hansen',
+            },
+            {
+              name: 'Galloway',
+            },
+            {
+              name: 'Willis',
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};

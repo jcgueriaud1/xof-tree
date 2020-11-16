@@ -7,6 +7,12 @@ This webcomponent follows the [open-wc](https://github.com/open-wc/open-wc) reco
 You can test the component here:
 [Netlify](https://xof-tree.netlify.app/?path=/story/xoftree--simple)
 
+## Performance
+
+You can test the performace with this command:
+npm run tach performance/longdata.html
+npm run tach performance/longdata-expanded.html
+
 ## Installation
 ```bash
 npm i xof-tree

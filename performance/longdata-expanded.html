@@ -1,0 +1,26 @@
+<html>
+<body>
+  <div id="demo"></div>
+<script type="module">
+  import * as bench from '/bench.js';
+  bench.start();
+    import { html, render } from 'lit-html';
+    import '../dist/xof-tree.js';
+    import '../dist/xof-tree-item.js';
+    import * as JSON from './test-data.js';
+    const title = 'Hello owc Worldsdsdsd!';
+    const multiselect = false;
+     const renderer = (item) => html`+++${item}+++++`;
+
+    render(
+      html`
+        <xof-tree .title=${title} .data=${JSON.default.DATA} .multiselect=${multiselect} .renderer=${renderer}>
+          some more light-dom
+        </xof-tree>
+      `,
+      document.querySelector('#demo')
+    );
+  bench.stop();
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 import { html, fixture, expect } from '@open-wc/testing';
 
-import {XofTree} from '../src/XofTree.js';
+import { XofTree } from '../src/XofTree.js';
 import '../xof-tree.js';
 
 import * as JSON from '../test/test-data.js';
@@ -21,7 +21,7 @@ describe('XofTree', () => {
     expect(el.initialized).to.equal(true);
     await expect(el).shadowDom.to.be.accessible();
   });
-/*
+  /*
   it('increases the counter on button click', async () => {
     const el: XofTree = await fixture(html`
       <xof-tree></xof-tree>

@@ -1,4 +1,4 @@
-import { html, css, LitElement, property, PropertyValues } from 'lit-element';
+import { html, css, LitElement, property, PropertyValues, TemplateResult } from 'lit-element';
 import { XofTreeItem } from './XofTreeItem';
 
 export interface TreeItem {
@@ -7,19 +7,18 @@ export interface TreeItem {
   children: TreeItemArray;
 }
 
-export type TreeItemArray = Array<TreeItem>
-
+export type TreeItemArray = Array<TreeItem>;
 
 export class XofTree extends LitElement {
-  static styles =css`
+  static styles = css`
     ul,
     ul li,
     ul ul li {
-      margin:0;
+      margin: 0;
       text-indent: 0;
       list-style-type: none;
     }
-      .expander {
+    .expander {
       content: ' ';
       display: inline-block;
 
@@ -28,10 +27,10 @@ export class XofTree extends LitElement {
       border-left: 5px solid currentColor;
 
       vertical-align: middle;
-      margin-right: .7rem;
+      margin-right: 0.7rem;
       transform: translateY(-2px);
 
-      transition: transform .2s ease-out;
+      transition: transform 0.2s ease-out;
     }
     .leaf.expander {
       content: none;
@@ -42,24 +41,27 @@ export class XofTree extends LitElement {
 
   `;
 
-  @property({type: String}) title = 'Hey there';
+  @property({ type: String }) title = 'Hey there';
 
-  @property({attribute: false}) data: TreeItemArray = [];
+  @property({ attribute: false }) data: TreeItemArray = [];
 
-  @property({type: Boolean}) initialized = false;
+  @property({ type: Boolean }) initialized = false;
 
-  @property({attribute: false}) focusedItem = null;
+  @property({ attribute: false }) focusedItem = null;
 
-  @property({type: Boolean}) multiselect = false;
+  @property({ type: Boolean }) multiselect = false;
 
- // First argument is the slot name
+  @property({ attribute: false })
+  renderer: (item: String) => TemplateResult = (item: String) => html`***${item}*****`;
+
+  // First argument is the slot name
   // Second argument is `true` to flatten the assigned nodes.
   /*@queryAssignedNodes('children', true)
   _childrenNodes!: NodeListOf<HTMLElement>;*/
 
   protected shouldUpdate(changedProperties: PropertyValues): boolean {
     if (!this.initialized) {
-      console.log("initialized {}", changedProperties.size);
+      console.log('initialized {}', changedProperties.size);
       /*this.panels = Array.from(this.children);
       this.panels.map(panel => panel.setAttribute('tabIndex', '0'));
       this.addEventListener('click', this.handleClick);
@@ -77,115 +79,123 @@ export class XofTree extends LitElement {
   }
 
   handleItemSelectedE(e1: Event) {
-    const e = (e1 as CustomEvent<{selected: boolean; item: XofTree}>);
+    const e = e1 as CustomEvent<{ selected: boolean; item: XofTree }>;
     if (e.detail.selected) {
-      console.log(e.detail.item + " selected");
+      console.log(e.detail.item + ' selected');
     } else {
-      console.log(e.detail.item + " deselected");
+      console.log(e.detail.item + ' deselected');
     }
   }
 
-  handleItemSelected(e: CustomEvent<{selected: boolean; item: XofTree}>) {
+  handleItemSelected(e: CustomEvent<{ selected: boolean; item: XofTree }>) {
     if (e.detail.selected) {
-      console.log(e.detail.item + " selected");
+      console.log(e.detail.item + ' selected');
     } else {
-      console.log(e.detail.item + " deselected");
+      console.log(e.detail.item + ' deselected');
     }
   }
 
   leaf() {
-    return !(this.data && this.data.length > 0)
+    return !(this.data && this.data.length > 0);
   }
 
-  handleKeydown(event: KeyboardEvent ) {
-
+  handleKeydown(event: KeyboardEvent) {
     event.preventDefault();
-    const treeitem: XofTreeItem = event.composedPath().find((p) => (p as HTMLElement).nodeName === "XOF-TREE-ITEM") as XofTreeItem;
+    const treeitem: XofTreeItem = event
+      .composedPath()
+      .find(
+        p => (p as HTMLElement).nodeName === 'XOF-TREE-ITEM'
+      ) as XofTreeItem;
     treeitem.tabIndex = -1;
     switch (event.key) {
       // Tab.
-    case "Down": // IE/Edge specific value
-    case "ArrowDown":
-      //target = this.setNextItem(target);
-      if (treeitem.expanded) {
-        this.navigateToFirstChildItem(treeitem);
-      } else {
-        this.navigateToNextItem(treeitem);
-      }
-      break;
-      case "Up": // IE/Edge specific value
-      case "ArrowUp":
+      case 'Down': // IE/Edge specific value
+      case 'ArrowDown':
+        //target = this.setNextItem(target);
+        if (treeitem.expanded) {
+          this.navigateToFirstChildItem(treeitem);
+        } else {
+          this.navigateToNextItem(treeitem);
+        }
+        break;
+      case 'Up': // IE/Edge specific value
+      case 'ArrowUp':
         //target = this.setPreviousItem(target);
         this.navigateToPreviousItem(treeitem);
         break;
-      case "Right": // IE/Edge specific value
-      case "ArrowRight":
-          if (treeitem.leaf()) {
-            this.navigateToNextItem(treeitem);
+      case 'Right': // IE/Edge specific value
+      case 'ArrowRight':
+        if (treeitem.leaf()) {
+          this.navigateToNextItem(treeitem);
+        } else {
+          if (!treeitem.expanded && !treeitem.leaf()) {
+            treeitem.expanded = true;
           } else {
-            if (!treeitem.expanded && !treeitem.leaf()) {
-              treeitem.expanded = true;
-            } else {
-              // go to next item
-              this.navigateToFirstChildItem(treeitem);
-            }
+            // go to next item
+            this.navigateToFirstChildItem(treeitem);
           }
-          break;
-          case "Left": // IE/Edge specific value
-          case "ArrowLeft":
-              if (treeitem.expanded) {
-                treeitem.expanded = false;
-              } else {
-                // go to next item
-                this.navigateToParentItem(treeitem);
-              }
-              break;
+        }
+        break;
+      case 'Left': // IE/Edge specific value
+      case 'ArrowLeft':
+        if (treeitem.expanded) {
+          treeitem.expanded = false;
+        } else {
+          // go to next item
+          this.navigateToParentItem(treeitem);
+        }
+        break;
 
-          case " ":
-              if (this.multiselect) {
-                treeitem.toggleSelection();
-              }
-              break;
+      case ' ':
+        if (this.multiselect) {
+          treeitem.toggleSelection();
+        }
+        break;
       default:
         break;
     }
-
   }
 
   navigateToNextItem(treeitem: XofTreeItem) {
-    console.log("navigate to next item" + treeitem.ATTRIBUTE_NODE);
+    console.log('navigate to next item' + treeitem.ATTRIBUTE_NODE);
     const nextElement = treeitem.nextElementSibling as XofTreeItem;
 
     if (nextElement) {
       nextElement.focus();
     } else {
-      console.log("last child");
-      const parent = ((treeitem.getRootNode() as ShadowRoot).host as XofTreeItem);
+      console.log('last child');
+      const parent = (treeitem.getRootNode() as ShadowRoot).host as XofTreeItem;
       if (!(parent instanceof XofTree)) {
         this.navigateToNextItem(parent);
       } else {
-        this.navigateToNextItem(((treeitem.parentElement as HTMLElement).closest('xof-tree-item') as XofTreeItem));
+        this.navigateToNextItem(
+          (treeitem.parentElement as HTMLElement).closest(
+            'xof-tree-item'
+          ) as XofTreeItem
+        );
       }
     }
   }
 
   navigateToPreviousItem(treeitem: XofTreeItem) {
-    console.log("navigate to previous item" + treeitem.ATTRIBUTE_NODE);
+    console.log('navigate to previous item' + treeitem.ATTRIBUTE_NODE);
     const previousElement = treeitem.previousElementSibling as XofTreeItem;
     if (previousElement) {
       if (previousElement.expanded) {
-        previousElement.focusLastChild()
+        previousElement.focusLastChild();
       } else {
         previousElement.focus();
       }
     } else {
-      console.log("first child");
+      console.log('first child');
       treeitem.closest('element-x');
-      const parent = ((treeitem.getRootNode() as ShadowRoot).host as XofTreeItem);
+      const parent = (treeitem.getRootNode() as ShadowRoot).host as XofTreeItem;
       if (!(parent instanceof XofTree)) {
         parent.focus();
       } else {
-        ((treeitem.parentElement as HTMLElement).closest('xof-tree-item') as HTMLElement).focus();
+        ((treeitem.parentElement as HTMLElement).closest(
+          'xof-tree-item'
+        ) as HTMLElement).focus();
       }
     }
   }
@@ -193,18 +203,20 @@ export class XofTree extends LitElement {
   // last Element Child
 
   navigateToFirstChildItem(treeitem: XofTreeItem) {
-    console.log("navigate to parent item" + treeitem.ATTRIBUTE_NODE);
+    console.log('navigate to parent item' + treeitem.ATTRIBUTE_NODE);
     treeitem.focusFirstChild();
   }
 
   navigateToParentItem(treeitem: XofTreeItem) {
-    console.log("navigate to parent item" + treeitem.ATTRIBUTE_NODE);
+    console.log('navigate to parent item' + treeitem.ATTRIBUTE_NODE);
     //debugger;
-    const parent = ((treeitem.getRootNode() as ShadowRoot).host as XofTreeItem);
+    const parent = (treeitem.getRootNode() as ShadowRoot).host as XofTreeItem;
     if (!(parent instanceof XofTree)) {
       parent.focus();
     } else {
-      ((treeitem.parentElement as HTMLElement).closest('xof-tree-item') as HTMLElement).focus();
+      ((treeitem.parentElement as HTMLElement).closest(
+        'xof-tree-item'
+      ) as HTMLElement).focus();
     }
   }
   /*setFocusToItem(treeitem) {
@@ -237,11 +249,21 @@ function activate(item) {
 
   render() {
     return html`
-    <h3 id="tree_label">${this.title}</h3>
-    ${this.leaf() ? html`` : html`<ul role="tree" id="tree" aria-labelledby="tree_label">
-    ${this.data.map(item => html`<xof-tree-item .title=${item.name} .data=${item.children} .expanded=${item.expanded} .multiselect=${this.multiselect}></xof-tree-item>`)}
-    </ul>`}
-
+      <h3 id="tree_label">${this.title}</h3>
+      ${this.leaf()
+        ? html``
+        : html`<ul role="tree" id="tree" aria-labelledby="tree_label">
+            ${this.data.map(
+              item =>
+                html`<xof-tree-item
+                  .title=${item.name}
+                  .data=${item.children}
+                  ?expanded=${item.expanded}
+                  ?multiselect=${this.multiselect}
+                  .renderer=${this.renderer}
+                ></xof-tree-item>`
+            )}
+          </ul>`}
     `;
   }
 }
