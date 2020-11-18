@@ -10,7 +10,10 @@
 </head>
 <body>
   <div id="demo"></div>
-
+  <ul>
+    <li>Previous selected Item: <span id="old"></span></li>
+    <li>Current selected Item: <span id="new"></span></li>
+  </ul>
   <script type="module">
     import { html, render } from 'lit-html';
     import '../dist/xof-tree.js';
@@ -19,40 +22,46 @@
     const title = 'Hello owc Worldsdsdsd!';
     const multiselect = true;
 
-    const data = [
+    const items = [
             {
-              "name": "Branch1",
+              "itemdata": "Branch1",
               "expanded": true,
               "children": [
                 {
-                  "name": "Branch1.1",
+                  "itemdata": "Branch1.1",
                   "children": [
                   {
-                    "name": "Leaf1.1.1"
+                    "itemdata": "Leaf1.1.1"
                   },
                   {
-                    "name": "Leaf1.1.2"
+                    "itemdata": "Leaf1.1.2"
                   }
                 ]
                 }   ,
                 {
-                  "name": "Branch1.2",
+                  "itemdata": "Branch1.2",
                   "children": [
                   {
-                    "name": "Leaf1.2.1"
+                    "itemdata": "Leaf1.2.1"
                   },
                   {
-                    "name": "Leaf1.2.2"
+                    "itemdata": "Leaf1.2.2"
                   }
                 ]
                 }
               ]
             }
           ];
+          const itemSelected = (event) => {
+            const old = document.querySelector('#old');
+            old.innerHTML = event.detail.old;
+            const newItem = document.querySelector('#new');
+            newItem.innerHTML = event.detail.new;
+          };
 
     render(
       html`
-        <xof-tree .title=${title} .data=${data} .multiselect=${multiselect}>
+        <xof-tree .title=${title} .items=${items} .multiselect=${multiselect} @item-selected=${itemSelected}>
           some more light-dom
         </xof-tree>
       `,

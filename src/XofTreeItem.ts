@@ -1,8 +1,9 @@
 import { html, LitElement, property, query, TemplateResult } from 'lit-element';
 import { TreeItemArray, TreeItem } from './XofTree';
+import { lazy } from './lazy-lit-element';
 
 export class XofTreeItem extends LitElement {
-  @property({ type: String }) title = 'Hey there';
+  @property({ attribute: false}) itemdata;
 
   @property({ type: Boolean }) expanded = false;
 
@@ -10,13 +11,13 @@ export class XofTreeItem extends LitElement {
 
   @property({ type: Boolean }) multiselect = false;
 
-  @property({ attribute: false }) data: TreeItemArray = [];
+  @property({ attribute: false }) items: TreeItemArray = [];
 
   @property({ attribute: false })
-  renderer: (item: String) => TemplateResult = (item: String) => html`***${item}*****`;
+  renderer: (item: any) => TemplateResult = (item: any) => html`***${item}*****`;
 
   leaf() {
-    return !(this.data && this.data.length > 0);
+    return !(this.items && this.items.length > 0);
   }
 
 
@@ -83,7 +84,7 @@ export class XofTreeItem extends LitElement {
 
   toggleSelection() {
     this._checkbox.checked = !this._checkbox.checked;
-    const event = new CustomEvent('item-selected', {
+    const event = new CustomEvent('__item-selected', {
       detail: { selected: this._checkbox.checked, item: this },
     });
     const parent = (this.getRootNode() as ShadowRoot).host as HTMLElement;
@@ -94,12 +95,27 @@ export class XofTreeItem extends LitElement {
     /**
      * send event item checked
      */
+    const event = new CustomEvent('__item-selected', {
+      detail: { selected: this._checkbox.checked, item: this },
+    });
+    const parent = (this.getRootNode() as ShadowRoot).host as HTMLElement;
+    parent.dispatchEvent(event);
   }
 
   createRenderRoot() {
     return this;
   }
+  /*
+  handleItemSelected(e: CustomEvent<{ selected: boolean; item: XofTreeItem }>) {
+    const event = new CustomEvent('__item-selected', {
+      detail: { selected: e.detail.selected, item: e.detail.item },
+    });
+    const parent = (this.getRootNode() as ShadowRoot).host as HTMLElement;
+    parent.dispatchEvent(event);
+  }*/
+
   render() {
+    console.log("render");
     return html`
       <li role="treeitem" aria-expanded="${this.expanded}">
         <span
@@ -118,16 +134,16 @@ export class XofTreeItem extends LitElement {
                 @click=${this.msClicked}
               />`
             : html``}
-          <span @click=${this.labelClickHandler}>${this.renderer(this.title)}</span>
+          <span @click=${this.labelClickHandler}>${this.renderer(this.itemdata)}</span>
         </span>
         ${this.leaf() || !this.expanded
           ? html``
           : html`<ul id="list" role="group">
-              ${this.data.map(
+              ${this.items.map(
                 item =>
                   html`<xof-tree-item
-                    .title=${item.name}
-                    .data=${item.children}
+                    .itemdata=${item.itemdata}
+                    .items=${item.children}
                     ?expanded=${item.expanded}
                     ?multiselect=${this.multiselect}
                     .renderer=${this.renderer}
@@ -137,4 +153,5 @@ export class XofTreeItem extends LitElement {
       </li>
     `;
   }
+
 }

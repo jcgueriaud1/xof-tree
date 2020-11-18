@@ -1,13 +1,13 @@
 import { html, css, LitElement, property, PropertyValues, TemplateResult } from 'lit-element';
 import { XofTreeItem } from './XofTreeItem';
 
-export interface TreeItem {
-  name: string;
+export interface TreeItem<T> {
+  itemdata: T;
   expanded: boolean;
   children: TreeItemArray;
 }
 
-export type TreeItemArray = Array<TreeItem>;
+export type TreeItemArray = Array<TreeItem<any>>;
 
 export class XofTree extends LitElement {
   static styles = css`
@@ -43,7 +43,7 @@ export class XofTree extends LitElement {
 
   @property({ type: String }) title = 'Hey there';
 
-  @property({ attribute: false }) data: TreeItemArray = [];
+  @property({ attribute: false }) items: TreeItemArray = [];
 
   @property({ type: Boolean }) initialized = false;
 
@@ -52,7 +52,9 @@ export class XofTree extends LitElement {
   @property({ type: Boolean }) multiselect = false;
 
   @property({ attribute: false })
-  renderer: (item: String) => TemplateResult = (item: String) => html`***${item}*****`;
+  renderer: (item: any) => TemplateResult = (item: any) => html`***${item}*****`;
+
+  private _itemsSelected: Array<any> = [];
 
   // First argument is the slot name
   // Second argument is `true` to flatten the assigned nodes.
@@ -67,7 +69,7 @@ export class XofTree extends LitElement {
       this.addEventListener('click', this.handleClick);
       this.addEventListener('keyup', this.handleKeyup);*/
       this.addEventListener('keydown', this.handleKeydown);
-      this.addEventListener('item-selected', this.handleItemSelectedE);
+      this.addEventListener('__item-selected', this.handleItemSelected);
       this.initialized = true;
     }
     /*
@@ -78,25 +80,33 @@ export class XofTree extends LitElement {
     return this.initialized;
   }
 
-  handleItemSelectedE(e1: Event) {
+  /*handleItemSelectedE(e1: Event) {
     const e = e1 as CustomEvent<{ selected: boolean; item: XofTree }>;
     if (e.detail.selected) {
-      console.log(e.detail.item + ' selected');
+      console.log(e.detail.item + ' selectedE');
     } else {
-      console.log(e.detail.item + ' deselected');
+      console.log(e.detail.item + ' deselectedE');
     }
-  }
+  }*/
 
-  handleItemSelected(e: CustomEvent<{ selected: boolean; item: XofTree }>) {
+  handleItemSelected(e1: Event) {
+    const e = e1 as CustomEvent<{ selected: boolean; item: XofTreeItem }>;
+    const _oldItemsSelected = [...this._itemsSelected];
     if (e.detail.selected) {
-      console.log(e.detail.item + ' selected');
+      this._itemsSelected.push(e.detail.item.itemdata);
     } else {
-      console.log(e.detail.item + ' deselected');
+
+      const idx = this._itemsSelected.indexOf(e.detail.item.itemdata);
+      this._itemsSelected = this._itemsSelected.filter((item, index) => index !== idx);
     }
+    const event = new CustomEvent('item-selected', {
+      detail: { old: _oldItemsSelected, new: this._itemsSelected },
+    });
+    this.dispatchEvent(event);
   }
 
   leaf() {
-    return !(this.data && this.data.length > 0);
+    return !(this.items && this.items.length > 0);
   }
 
   handleKeydown(event: KeyboardEvent) {
@@ -155,7 +165,6 @@ export class XofTree extends LitElement {
         break;
     }
   }
-
   navigateToNextItem(treeitem: XofTreeItem) {
     console.log('navigate to next item' + treeitem.ATTRIBUTE_NODE);
     const nextElement = treeitem.nextElementSibling as XofTreeItem;
@@ -246,18 +255,17 @@ function activate(item) {
   item.focus();
 }
   */
-
   render() {
     return html`
       <h3 id="tree_label">${this.title}</h3>
       ${this.leaf()
         ? html``
         : html`<ul role="tree" id="tree" aria-labelledby="tree_label">
-            ${this.data.map(
+            ${this.items.map(
               item =>
                 html`<xof-tree-item
-                  .title=${item.name}
-                  .data=${item.children}
+                  .itemdata=${item.itemdata}
+                  .items=${item.children}
                   ?expanded=${item.expanded}
                   ?multiselect=${this.multiselect}
                   .renderer=${this.renderer}

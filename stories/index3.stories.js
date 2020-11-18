@@ -14,7 +14,7 @@ export default {
   options: { selectedPanel: 'storybookjs/knobs/panel' },
 };
 
-const data = [
+const items = [
   {
     name: 'Branch1',
     expanded: true,
@@ -45,9 +45,9 @@ const data = [
   },
 ];
 export const SimpleStory = () => html`
-  <xof-tree title="Hello World" .data=${data}></xof-tree>
+  <xof-tree title="Hello World" .items=${data}></xof-tree>
 `;
 
 export const MultiSelectStory = () => html`
-  <xof-tree title="Hello World" .data=${data} multiselect="true"></xof-tree>
+  <xof-tree title="Hello World" .items=${data} multiselect="true"></xof-tree>
 `;

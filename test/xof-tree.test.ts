@@ -9,14 +9,14 @@ import * as JSONSMALL from '../test/test-small-data.js';
 describe('XofTree', () => {
   it('has a default title "Hey there" and counter 5', async () => {
     const el: XofTree = await fixture(html`
-      <xof-tree .data=${JSON.default.DATA}></xof-tree>
+      <xof-tree .items=${JSON.default.DATA}></xof-tree>
     `);
     expect(el.initialized).to.equal(true);
     await expect(el).shadowDom.to.be.accessible();
   });
   it('has a default title "Hey there" and counter 5', async () => {
     const el: XofTree = await fixture(html`
-      <xof-tree .data=${JSONSMALL.default.DATA}></xof-tree>
+      <xof-tree .items=${JSONSMALL.default.DATA}></xof-tree>
     `);
     expect(el.initialized).to.equal(true);
     await expect(el).shadowDom.to.be.accessible();

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      background: #fafafa;
+    }
+  </style>
+</head>
+<body>
+  <div id="demo"></div>
+
+  <script type="module">
+    import { html, render } from 'lit-html';
+    import '../dist/xof-tree.js';
+    import '../dist/xof-tree-item.js';
+
+    const title = 'Hello owc Worldsdsdsd!';
+
+    const items = [
+            {
+              "itemdata": {
+                name:"Branch1",
+                type: "folder",
+                icon: false
+              },
+              "expanded": true,
+              "children": [
+                {
+                  "itemdata": {
+                name:"Branch1.1",
+                type: "folder",
+                icon: true
+              },
+                  "children": [
+                    {
+                      "itemdata": {
+                      name:"Leaf1.1.1",
+                      type: "file",
+                      icon: true
+                      }
+                        },
+                    {
+                      "itemdata": {
+                      name:"Leaf1.1.2",
+                      type: "file",
+                      icon: true
+                      }
+                    }
+                ]
+                }   ,
+                {
+                  "itemdata": {
+                    name:"Branch1.2",
+                    type: "folder",
+                    icon: true
+                  },
+                  "children": [
+                  {
+                    "itemdata": {
+                      name:"Leaf1.2.1",
+                      type: "word",
+                      icon: false
+                    }
+                  },
+                  {
+                    "itemdata": {
+                      name:"Leaf1.2.2",
+                      type: "folder",
+                      icon: true
+                    }
+                  }
+                ]
+                }
+              ]
+            }
+          ];
+     const renderer = (item) => html`${item.icon ? html`icon` : html`no-icon`} - ${item.type} ${item.name}`;
+
+    render(
+      html`
+        <xof-tree .title=${title} .items=${items} .renderer=${renderer}>
+          some more light-dom
+        </xof-tree>
+      `,
+      document.querySelector('#demo')
+    );
+  </script>
+</body>
+</html>
