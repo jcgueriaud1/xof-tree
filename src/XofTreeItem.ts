@@ -1,31 +1,64 @@
-import { html, LitElement, property, query, TemplateResult } from 'lit-element';
+import {html, nothing} from 'lit-html';
+import { css, LitElement, property, query, TemplateResult, queryAssignedNodes } from 'lit-element';
 import { TreeItemArray, TreeItem } from './XofTree';
-import { lazy } from './lazy-lit-element';
+
 
 export class XofTreeItem extends LitElement {
+  static styles = css`
+    ul,
+    ul li,
+    ul ul li {
+      margin: 0;
+      text-indent: 0;
+      list-style-type: none;
+    }
+    .expander {
+      content: ' ';
+      display: inline-block;
+
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 5px solid currentColor;
+
+      vertical-align: middle;
+      margin-right: 0.7rem;
+      transform: translateY(-2px);
+
+      transition: transform 0.2s ease-out;
+    }
+    .leaf.expander {
+      content: none;
+    }
+    .expanded.expander {
+      transform: rotate(90deg) translateX(-3px);
+    }
+
+  `;
   @property({ attribute: false}) itemdata;
 
   @property({ type: Boolean }) expanded = false;
 
+  @property({ type: Number }) level = -1;
+
+  @property({ attribute: false })
+  itemchildren: TreeItemArray = [];
+
   @property({ type: Number }) tabIndex = -1;
 
   @property({ type: Boolean }) multiselect = false;
+
+  @property({ type: Boolean }) leaf = false;
 
   @property({ attribute: false }) items: TreeItemArray = [];
 
   @property({ attribute: false })
   renderer: (item: any) => TemplateResult = (item: any) => html`***${item}*****`;
 
-  leaf() {
-    return !(this.items && this.items.length > 0);
-  }
-
-
   /**
    * Probably better to send an event that is catched in the tree
    */
   clickHandler() {
-    if (!this.leaf()) {
+    if (!this.leaf) {
       this.expanded = !this.expanded;
     }
   }
@@ -44,7 +77,7 @@ export class XofTreeItem extends LitElement {
   }
 
   cssExpanderClassName() {
-    if (this.leaf()) {
+    if (this.leaf) {
       return 'leaf';
     } else {
       if (this.expanded) {
@@ -70,11 +103,16 @@ export class XofTreeItem extends LitElement {
   _list!: HTMLElement;
 
   focusFirstChild() {
-    (this._list.firstElementChild as XofTreeItem).focus();
+    (this._itemNodes[0].firstElementChild as XofTreeItem).focus();
+    //(this._list.firstElementChild as XofTreeItem).focus();
   }
 
+  @queryAssignedNodes('items', true)
+  _itemNodes!: NodeListOf<XofTreeItem>;
+
   focusLastChild() {
-    const child = this._list.lastElementChild as XofTreeItem;
+    //const child = this._list.lastElementChild as XofTreeItem;
+    const child = (this._itemNodes[0].lastElementChild as XofTreeItem);
     if (child.expanded) {
       child.focusLastChild();
     } else {
@@ -102,9 +140,6 @@ export class XofTreeItem extends LitElement {
     parent.dispatchEvent(event);
   }
 
-  createRenderRoot() {
-    return this;
-  }
   /*
   handleItemSelected(e: CustomEvent<{ selected: boolean; item: XofTreeItem }>) {
     const event = new CustomEvent('__item-selected', {
@@ -115,7 +150,7 @@ export class XofTreeItem extends LitElement {
   }*/
 
   render() {
-    console.log("render");
+    //console.log("render");
     return html`
       <li role="treeitem" aria-expanded="${this.expanded}">
         <span
@@ -133,22 +168,12 @@ export class XofTreeItem extends LitElement {
                 id="ms-checkbox"
                 @click=${this.msClicked}
               />`
-            : html``}
+            : nothing}
           <span @click=${this.labelClickHandler}>${this.renderer(this.itemdata)}</span>
         </span>
-        ${this.leaf() || !this.expanded
-          ? html``
-          : html`<ul id="list" role="group">
-              ${this.items.map(
-                item =>
-                  html`<xof-tree-item
-                    .itemdata=${item.itemdata}
-                    .items=${item.children}
-                    ?expanded=${item.expanded}
-                    ?multiselect=${this.multiselect}
-                    .renderer=${this.renderer}
-                  ></xof-tree-item>`
-              )}
+        ${this.leaf || !this.expanded
+          ? nothing
+          : html`<ul id="list" role="group"><slot name="items"></slot>
             </ul>`}
       </li>
     `;
