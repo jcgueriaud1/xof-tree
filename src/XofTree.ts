@@ -123,7 +123,7 @@ export class XofTree extends LitElement {
       case 'Down': // IE/Edge specific value
       case 'ArrowDown':
         //target = this.setNextItem(target);
-        if (treeitem.expanded) {
+        if (treeitem.item!.expanded) {
           this.navigateToFirstChildItem(treeitem);
         } else {
           this.navigateToNextItem(treeitem);
@@ -139,8 +139,8 @@ export class XofTree extends LitElement {
         if (treeitem.leaf) {
           this.navigateToNextItem(treeitem);
         } else {
-          if (!treeitem.expanded && !treeitem.leaf) {
-            treeitem.expanded = true;
+          if (!treeitem.item!.expanded && !treeitem.leaf) {
+            //treeitem.expanded = true;
             // jcg test load
             this._loadTreeItem(treeitem);
           } else {
@@ -151,8 +151,8 @@ export class XofTree extends LitElement {
         break;
       case 'Left': // IE/Edge specific value
       case 'ArrowLeft':
-        if (treeitem.expanded) {
-          treeitem.expanded = false;
+        if (treeitem.item!.expanded) {
+          treeitem.item!.expanded = false;
         } else {
           // go to next item
           this.navigateToParentItem(treeitem);
@@ -167,13 +167,16 @@ export class XofTree extends LitElement {
       default:
         break;
     }
+    console.log("requestUpdate")
+    this.requestUpdate();
   }
 
   private _loadTreeItem(treeitem: XofTreeItem) {
     if (treeitem.childElementCount == 0) {
-      render(html`<div slot="items">
-      ${this.renderItems(treeitem.itemchildren, treeitem.level + 1, this.multiselect)}
-    </div>`, treeitem, {eventContext: this});
+      console.log("_loadTreeItem")
+      treeitem.item!.expanded = true;
+      this.requestUpdate();
+      console.log("requestUpdate _loadTreeItem")
     }
   }
 
@@ -202,7 +205,7 @@ export class XofTree extends LitElement {
     console.log('navigate to previous item' + treeitem.ATTRIBUTE_NODE);
     const previousElement = treeitem.previousElementSibling as XofTreeItem;
     if (previousElement) {
-      if (previousElement.expanded) {
+      if (previousElement.item!.expanded) {
         previousElement.focusLastChild();
       } else {
         previousElement.focus();
@@ -252,7 +255,7 @@ export class XofTree extends LitElement {
       item => {
         return  html`<xof-tree-item
           .itemdata=${item.itemdata}
-          .itemchildren=${item.children}
+          .item=${item}
           ?expanded=${item.expanded}
           ?leaf=${this._isleaf(item.children)}
           ?multiselect=${multiselect}

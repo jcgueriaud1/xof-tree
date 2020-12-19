@@ -36,12 +36,10 @@ export class XofTreeItem extends LitElement {
   `;
   @property({ attribute: false}) itemdata;
 
-  @property({ type: Boolean }) expanded = false;
-
   @property({ type: Number }) level = -1;
 
   @property({ attribute: false })
-  itemchildren: TreeItemArray = [];
+  item?: TreeItem<any>;
 
   @property({ type: Number }) tabIndex = -1;
 
@@ -59,7 +57,7 @@ export class XofTreeItem extends LitElement {
    */
   clickHandler() {
     if (!this.leaf) {
-      this.expanded = !this.expanded;
+      this.item!.expanded = !this.item!.expanded;
     }
   }
 
@@ -80,7 +78,7 @@ export class XofTreeItem extends LitElement {
     if (this.leaf) {
       return 'leaf';
     } else {
-      if (this.expanded) {
+      if (this.item!.expanded) {
         return 'expander expanded';
       } else {
         return 'expander';
@@ -113,7 +111,7 @@ export class XofTreeItem extends LitElement {
   focusLastChild() {
     //const child = this._list.lastElementChild as XofTreeItem;
     const child = (this._itemNodes[0].lastElementChild as XofTreeItem);
-    if (child.expanded) {
+    if (child.item!.expanded) {
       child.focusLastChild();
     } else {
       child.focus();
@@ -152,7 +150,7 @@ export class XofTreeItem extends LitElement {
   render() {
     //console.log("render");
     return html`
-      <li role="treeitem" aria-expanded="${this.expanded}">
+      <li role="treeitem" aria-expanded="${this.item!.expanded}">
         <span
           id="label"
           class="${this.cssClassName()}"
@@ -171,7 +169,7 @@ export class XofTreeItem extends LitElement {
             : nothing}
           <span @click=${this.labelClickHandler}>${this.renderer(this.itemdata)}</span>
         </span>
-        ${this.leaf || !this.expanded
+        ${this.leaf || !this.item!.expanded
           ? nothing
           : html`<ul id="list" role="group"><slot name="items"></slot>
             </ul>`}
