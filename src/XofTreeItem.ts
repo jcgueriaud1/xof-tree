@@ -1,6 +1,12 @@
-import {html, nothing} from 'lit-html';
-import { css, LitElement, property, query, TemplateResult, queryAssignedNodes } from 'lit-element';
-
+import { html, nothing } from 'lit-html';
+import {
+  css,
+  LitElement,
+  property,
+  query,
+  TemplateResult,
+  queryAssignedNodes,
+} from 'lit-element';
 
 export class XofTreeItem extends LitElement {
   static styles = css`
@@ -31,9 +37,8 @@ export class XofTreeItem extends LitElement {
     .expanded.expander {
       transform: rotate(90deg) translateX(-3px);
     }
-
   `;
-  @property({ attribute: false})
+  @property({ attribute: false })
   itemdata?: HasId;
 
   @property({ type: Number }) level = -1;
@@ -108,13 +113,12 @@ export class XofTreeItem extends LitElement {
     this.tabIndex = 0;
   }
 
-
   focusFirstChild() {
     (this._itemNodes[0].firstElementChild as XofTreeItem).focus();
   }
 
   focusLastChild() {
-    const child = (this._itemNodes[0].lastElementChild as XofTreeItem);
+    const child = this._itemNodes[0].lastElementChild as XofTreeItem;
     if (child.expanded) {
       child.focusLastChild();
     } else {
@@ -162,14 +166,16 @@ export class XofTreeItem extends LitElement {
                 ?checked=${this.selected}
               />`
             : nothing}
-          <span @click=${this.labelClickHandler}>${this.renderer(this.itemdata!)}</span>
+          <span @click=${this.labelClickHandler}
+            >${this.renderer(this.itemdata!)}</span
+          >
         </span>
         ${this.leaf || !this.expanded
           ? nothing
-          : html`<ul id="list" role="group"><slot name="items"></slot>
+          : html`<ul id="list" role="group">
+              <slot name="items"></slot>
             </ul>`}
       </li>
     `;
   }
-
 }

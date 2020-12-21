@@ -1,6 +1,12 @@
 import { html, nothing } from 'lit-html';
-import {  css, LitElement, property, queryAssignedNodes, TemplateResult } from 'lit-element';
-import { XofTreeItem } from './XofTreeItem';
+import {
+  css,
+  LitElement,
+  property,
+  queryAssignedNodes,
+  TemplateResult,
+} from 'lit-element';
+import { XofTreeItem } from './XofTreeItem.js';
 
 declare type TreeItemRenderer = (item: HasId) => TemplateResult;
 
@@ -37,7 +43,7 @@ export class XofTree extends LitElement {
 
   @property({ type: String }) title = 'Hey there';
 
-  @property({ attribute: false }) items: TreeItemDataArray = [];
+  @property({ attribute: false }) data: TreeItemDataArray = [];
 
   @property({ type: Boolean }) initialized = false;
 
@@ -65,12 +71,14 @@ export class XofTree extends LitElement {
     const e = e1 as CustomEvent<{ selected: boolean; item: XofTreeItem }>;
     const _oldItemsSelected = [...this._itemsSelected];
     if (e.detail.selected) {
-      this.select((itemdata) => e.detail.item.itemdata! == itemdata);
+      this.select(itemdata => e.detail.item.itemdata! == itemdata);
       this._itemsSelected.push(e.detail.item.itemdata!);
     } else {
-      this.deselect((itemdata) => e.detail.item.itemdata! == itemdata);
+      this.deselect(itemdata => e.detail.item.itemdata! == itemdata);
       const idx = this._itemsSelected.indexOf(e.detail.item.itemdata!);
-      this._itemsSelected = this._itemsSelected.filter((item, index) => index !== idx);
+      this._itemsSelected = this._itemsSelected.filter(
+        (item, index) => index !== idx
+      );
     }
     const event = new CustomEvent('item-selected', {
       detail: { old: _oldItemsSelected, new: this._itemsSelected },
@@ -82,12 +90,14 @@ export class XofTree extends LitElement {
     const e = e1 as CustomEvent<{ expanded: boolean; item: XofTreeItem }>;
     const _oldItemsExpanded = [...this._itemsExpanded];
     if (e.detail.expanded) {
-      this.expand((itemdata) => e.detail.item.itemdata! == itemdata);
+      this.expand(itemdata => e.detail.item.itemdata! == itemdata);
       this._itemsExpanded.push(e.detail.item.itemdata!);
     } else {
-      this.collapse((itemdata) => e.detail.item.itemdata! == itemdata);
+      this.collapse(itemdata => e.detail.item.itemdata! == itemdata);
       const idx = this._itemsExpanded.indexOf(e.detail.item.itemdata!);
-      this._itemsExpanded = this._itemsExpanded.filter((item, index) => index !== idx);
+      this._itemsExpanded = this._itemsExpanded.filter(
+        (item, index) => index !== idx
+      );
     }
     const event = new CustomEvent('item-expanded', {
       detail: { old: _oldItemsExpanded, new: this._itemsExpanded },
@@ -96,7 +106,7 @@ export class XofTree extends LitElement {
   }
 
   leaf() {
-    return !(this.items && this.items.length > 0);
+    return !(this.data && this.data.length > 0);
   }
 
   handleKeydown(event: KeyboardEvent) {
@@ -138,7 +148,7 @@ export class XofTree extends LitElement {
       case 'Left': // IE/Edge specific value
       case 'ArrowLeft':
         if (treeitem.expanded) {
-          this.collapse((itemdata) => itemdata == treeitem.itemdata);
+          this.collapse(itemdata => itemdata == treeitem.itemdata);
         } else {
           // go to next item
           this.navigateToParentItem(treeitem);
@@ -158,7 +168,7 @@ export class XofTree extends LitElement {
 
   private _loadTreeItem(treeitem: XofTreeItem) {
     if (treeitem.childElementCount == 0) {
-      this.expand((itemdata) => itemdata == treeitem.itemdata);
+      this.expand(itemdata => itemdata == treeitem.itemdata);
     }
   }
 
@@ -214,27 +224,40 @@ export class XofTree extends LitElement {
   }
 
   collapseAll() {
-    this.collapse(() => (true));
+    this.collapse(() => true);
   }
 
   expandAll() {
-    this.expand(() => (true));
+    this.expand(() => true);
   }
 
   collapse(condition: (item: HasId) => boolean) {
-    this.items = this.__expandOrCollapseIf(this.items, false, condition);
+    this.data = this.__expandOrCollapseIf(this.data, false, condition);
   }
 
   expand(condition: (item: HasId) => boolean) {
-    this.items = this.__expandOrCollapseIf(this.items, true, condition);
+    this.data = this.__expandOrCollapseIf(this.data, true, condition);
   }
 
-  private __expandOrCollapseIf(items: TreeItemDataArray, expanded: boolean, condition: (item: HasId) => boolean) {
+  private __expandOrCollapseIf(
+    items: TreeItemDataArray,
+    expanded: boolean,
+    condition: (item: HasId) => boolean
+  ) {
     return items.map(item => {
       if (item.children) {
-        return { itemdata: item.itemdata, selected:item.selected, expanded:(condition(item.itemdata)?expanded:item.expanded), children:this.__expandOrCollapseIf(item.children, expanded, condition)};
+        return {
+          itemdata: item.itemdata,
+          selected: item.selected,
+          expanded: condition(item.itemdata) ? expanded : item.expanded,
+          children: this.__expandOrCollapseIf(
+            item.children,
+            expanded,
+            condition
+          ),
+        };
       } else {
-        return {itemdata: item.itemdata, selected:item.selected};
+        return { itemdata: item.itemdata, selected: item.selected };
       }
     });
   }
@@ -248,28 +271,43 @@ export class XofTree extends LitElement {
   }
 
   select(condition: (item: HasId) => boolean) {
-    this.items = this.__selectOrSelectIf(this.items, true, condition);
+    this.data = this.__selectOrSelectIf(this.data, true, condition);
   }
 
   deselect(condition: (item: HasId) => boolean) {
-    this.items = this.__selectOrSelectIf(this.items, false, condition);
+    this.data = this.__selectOrSelectIf(this.data, false, condition);
   }
 
-  private __selectOrSelectIf(items: TreeItemDataArray, selected: boolean, condition: (item: HasId) => boolean) {
+  private __selectOrSelectIf(
+    items: TreeItemDataArray,
+    selected: boolean,
+    condition: (item: HasId) => boolean
+  ) {
     return items.map(item => {
       if (item.children) {
-        return { itemdata: item.itemdata, expanded:item.expanded, selected:(condition(item.itemdata)?selected:item.selected), children:this.__selectOrSelectIf(item.children, selected, condition)};
+        return {
+          itemdata: item.itemdata,
+          expanded: item.expanded,
+          selected: condition(item.itemdata) ? selected : item.selected,
+          children: this.__selectOrSelectIf(item.children, selected, condition),
+        };
       } else {
-        return {itemdata: item.itemdata, selected:(condition(item.itemdata)?selected:item.selected)};
+        return {
+          itemdata: item.itemdata,
+          selected: condition(item.itemdata) ? selected : item.selected,
+        };
       }
     });
   }
 
-  renderItems(items: TreeItemDataArray, level: number, multiselect: boolean): TemplateResult {
+  renderItems(
+    items: TreeItemDataArray,
+    level: number,
+    multiselect: boolean
+  ): TemplateResult {
     if (items) {
-    return html`${items.map(
-      item => {
-        return  html`<xof-tree-item
+      return html`${items.map(item => {
+        return html`<xof-tree-item
           .itemdata=${item.itemdata}
           .item=${item}
           ?expanded=${item.expanded}
@@ -278,13 +316,13 @@ export class XofTree extends LitElement {
           ?multiselect=${multiselect}
           .renderer=${this.renderer}
         >
-        ${(this._isleaf(item.children) || !item.expanded)?nothing:
-      html`<div slot="items">
-        ${this.renderItems(item.children!, level + 1, multiselect)}
-      </div>`}
+          ${this._isleaf(item.children) || !item.expanded
+            ? nothing
+            : html`<div slot="items">
+                ${this.renderItems(item.children!, level + 1, multiselect)}
+              </div>`}
         </xof-tree-item>`;
-        }
-      )}`;
+      })}`;
     } else {
       return html``;
     }
@@ -296,9 +334,9 @@ export class XofTree extends LitElement {
       ${this.leaf()
         ? nothing
         : html`<ul role="tree" id="tree" aria-labelledby="tree_label">
-          <slot name="items">
-            ${this.renderItems(this.items, 0, this.multiselect)}
-          </slot>
+            <slot name="items">
+              ${this.renderItems(this.data, 0, this.multiselect)}
+            </slot>
           </ul>`}
     `;
   }

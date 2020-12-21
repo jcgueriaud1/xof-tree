@@ -20,7 +20,7 @@
         {
           "name": "data",
           "type": "TreeItemArray",
-          "description": "Is tree in multiselect?",
+          "description": "data",
           "default": []
         }
       ],
