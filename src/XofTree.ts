@@ -1,6 +1,8 @@
 import { html, nothing } from 'lit-html';
-import {  css, LitElement, property, PropertyValues, TemplateResult, queryAssignedNodes } from 'lit-element';
+import {  css, LitElement, property, queryAssignedNodes, TemplateResult } from 'lit-element';
 import { XofTreeItem } from './XofTreeItem';
+
+declare type TreeItemRenderer = (item: HasId) => TemplateResult;
 
 export class XofTree extends LitElement {
   static styles = css`
@@ -44,18 +46,14 @@ export class XofTree extends LitElement {
   @property({ type: Boolean }) multiselect = false;
 
   @property({ attribute: false })
-  renderer: (item: HasId) => TemplateResult = (item: HasId) => html`${item}`;
+  renderer: TreeItemRenderer = (item: HasId) => html`${item}`;
 
   private _itemsSelected: Array<HasId> = [];
 
   private _itemsExpanded: Array<HasId> = [];
 
-  expandedIds: Array<string> = [];
-
-  // First argument is the slot name
-  // Second argument is `true` to flatten the assigned nodes.
-  /*@queryAssignedNodes('children', true)
-  _childrenNodes!: NodeListOf<HTMLElement>;*/
+  @queryAssignedNodes('items', true)
+  private _itemNodes!: NodeListOf<XofTreeItem>;
 
   protected firstUpdated() {
     this.addEventListener('keydown', this.handleKeydown);
@@ -122,7 +120,6 @@ export class XofTree extends LitElement {
         break;
       case 'Up': // IE/Edge specific value
       case 'ArrowUp':
-        //target = this.setPreviousItem(target);
         this.navigateToPreviousItem(treeitem);
         break;
       case 'Right': // IE/Edge specific value
@@ -131,8 +128,6 @@ export class XofTree extends LitElement {
           this.navigateToNextItem(treeitem);
         } else {
           if (!treeitem.expanded && !treeitem.leaf) {
-            //treeitem.expanded = true;
-            // jcg test load
             this._loadTreeItem(treeitem);
           } else {
             // go to next item
@@ -158,7 +153,6 @@ export class XofTree extends LitElement {
       default:
         break;
     }
-    console.log("requestUpdate")
     this.requestUpdate();
   }
 
@@ -169,28 +163,21 @@ export class XofTree extends LitElement {
   }
 
   navigateToNextItem(treeitem: XofTreeItem) {
-    console.log('navigate to next item' + treeitem.ATTRIBUTE_NODE);
     const nextElement = treeitem.nextElementSibling as XofTreeItem;
 
     if (nextElement) {
       nextElement.focus();
     } else {
-      console.log('last child');
-      const parent = (treeitem.getRootNode() as ShadowRoot).host as XofTreeItem;
-      if (!(parent instanceof XofTree)) {
-        this.navigateToNextItem(parent);
-      } else {
-        this.navigateToNextItem(
-          (treeitem.parentElement as HTMLElement).closest(
-            'xof-tree-item'
-          ) as XofTreeItem
-        );
+      const parentElement = (treeitem.parentElement as HTMLElement).closest(
+        'xof-tree-item'
+      );
+      if (parentElement) {
+        this.navigateToNextItem(parentElement as XofTreeItem);
       }
     }
   }
 
   navigateToPreviousItem(treeitem: XofTreeItem) {
-    console.log('navigate to previous item' + treeitem.ATTRIBUTE_NODE);
     const previousElement = treeitem.previousElementSibling as XofTreeItem;
     if (previousElement) {
       if (previousElement.expanded) {
@@ -199,39 +186,28 @@ export class XofTree extends LitElement {
         previousElement.focus();
       }
     } else {
-      console.log('first child');
-      treeitem.closest('element-x');
-      const parent = (treeitem.getRootNode() as ShadowRoot).host as XofTreeItem;
-      if (!(parent instanceof XofTree)) {
-        parent.focus();
-      } else {
-        ((treeitem.parentElement as HTMLElement).closest(
-          'xof-tree-item'
-        ) as HTMLElement).focus();
+      const parentElement = (treeitem.parentElement as HTMLElement).closest(
+        'xof-tree-item'
+      );
+      if (parentElement) {
+        (parentElement as HTMLElement).focus();
       }
     }
   }
 
   // last Element Child
-
   navigateToFirstChildItem(treeitem: XofTreeItem) {
-    console.log('navigate to navigateToFirstChildItem item' + treeitem.ATTRIBUTE_NODE);
     treeitem.focusFirstChild();
   }
 
   navigateToParentItem(treeitem: XofTreeItem) {
-    console.log('navigate to parent item' + treeitem.ATTRIBUTE_NODE);
-    const parent = (treeitem.getRootNode() as ShadowRoot).host as XofTreeItem;
-    if (!(parent instanceof XofTree)) {
-      parent.focus();
-    } else {
-      ((treeitem.parentElement as HTMLElement).closest(
-        'xof-tree-item'
-      ) as HTMLElement).focus();
+    const parentElement = (treeitem.parentElement as HTMLElement).closest(
+      'xof-tree-item'
+    );
+    if (parentElement) {
+      (parentElement as HTMLElement).focus();
     }
   }
-  @queryAssignedNodes('items', true)
-  _itemNodes!: NodeListOf<XofTreeItem>;
 
   _isleaf(children?: TreeItemDataArray) {
     return !(children && children.length > 0);

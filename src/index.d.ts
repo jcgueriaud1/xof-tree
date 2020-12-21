@@ -8,7 +8,6 @@ declare interface TreeItemData {
 
 declare type TreeItemDataArray = Array<TreeItemData>;
 
-
 declare interface HasId {
   id: string;
 }

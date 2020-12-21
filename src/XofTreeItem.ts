@@ -53,6 +53,18 @@ export class XofTreeItem extends LitElement {
   @property({ attribute: false })
   renderer: (item: HasId) => TemplateResult = (item: HasId) => html`${item}`;
 
+  @query('#label')
+  private _label!: HTMLElement;
+
+  @query('#ms-checkbox')
+  private _checkbox!: HTMLInputElement;
+
+  @query('#list')
+  private _list!: HTMLElement;
+
+  @queryAssignedNodes('items', true)
+  private _itemNodes!: NodeListOf<XofTreeItem>;
+
   /**
    * Probably better to send an event that is catched in the tree
    */
@@ -91,26 +103,15 @@ export class XofTreeItem extends LitElement {
     }
   }
 
-  @query('#label')
-  _label!: HTMLElement;
-
-  @query('#ms-checkbox')
-  _checkbox!: HTMLInputElement;
-
   focus() {
     this._label.focus();
     this.tabIndex = 0;
   }
 
-  @query('#list')
-  _list!: HTMLElement;
 
   focusFirstChild() {
     (this._itemNodes[0].firstElementChild as XofTreeItem).focus();
   }
-
-  @queryAssignedNodes('items', true)
-  _itemNodes!: NodeListOf<XofTreeItem>;
 
   focusLastChild() {
     const child = (this._itemNodes[0].lastElementChild as XofTreeItem);
