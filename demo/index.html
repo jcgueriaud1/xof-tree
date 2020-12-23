@@ -15,7 +15,7 @@
     import { html, render } from 'lit-html';
     import '../dist/xof-tree.js';
     import '../dist/xof-tree-item.js';
-
+    const multiselect = true;
     const title = 'Hello owc Worldsdsdsd!';
 
     const items = [
@@ -36,9 +36,12 @@
                 }   ,
                 {
                   "itemdata": "Branch1.2",
+                  "expanded": true,
+                  "selected": true,
                   "children": [
                   {
-                    "itemdata": "Leaf1.2.1"
+                    "itemdata": "Leaf1.2.1",
+                    "selected": true
                   },
                   {
                     "itemdata": "Leaf1.2.2"
@@ -51,8 +54,7 @@
 
     render(
       html`
-        <xof-tree .title=${title} .items=${items}>
-          some more light-dom
+        <xof-tree .title=${title} .data=${items} .multiselect=${multiselect}>
         </xof-tree>
       `,
       document.querySelector('#demo')
