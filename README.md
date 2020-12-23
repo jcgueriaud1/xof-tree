@@ -2,6 +2,10 @@
 
 This webcomponent follows the [open-wc](https://github.com/open-wc/open-wc) recommendation.
 
+## Experimental
+
+It's still a very early stage of the component. Only one version deployed and currently trying in a project.
+
 ## Demo
 
 You can test the component here:
