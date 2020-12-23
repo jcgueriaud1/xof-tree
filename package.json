@@ -28,6 +28,7 @@
   ],
   "files": [
     "/src",
+    "/dist/src",
     "*.d.ts",
     "*.d.ts.map",
     "*.js.map",
