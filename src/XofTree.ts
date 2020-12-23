@@ -178,11 +178,11 @@ export class XofTree extends LitElement {
     if (nextElement) {
       nextElement.focus();
     } else {
-      const parentElement = (treeitem.parentElement as HTMLElement).closest(
+      const parentElement = treeitem.parentElement!.closest(
         'xof-tree-item'
       );
       if (parentElement) {
-        this.navigateToNextItem(parentElement as XofTreeItem);
+        this.navigateToNextItem(parentElement);
       }
     }
   }
@@ -196,11 +196,11 @@ export class XofTree extends LitElement {
         previousElement.focus();
       }
     } else {
-      const parentElement = (treeitem.parentElement as HTMLElement).closest(
+      const parentElement = treeitem.parentElement!.closest(
         'xof-tree-item'
       );
       if (parentElement) {
-        (parentElement as HTMLElement).focus();
+        parentElement.focus();
       }
     }
   }
@@ -211,11 +211,11 @@ export class XofTree extends LitElement {
   }
 
   navigateToParentItem(treeitem: XofTreeItem) {
-    const parentElement = (treeitem.parentElement as HTMLElement).closest(
+    const parentElement = treeitem.parentElement!.closest(
       'xof-tree-item'
     );
     if (parentElement) {
-      (parentElement as HTMLElement).focus();
+      parentElement.focus();
     }
   }
 
@@ -339,5 +339,18 @@ export class XofTree extends LitElement {
             </slot>
           </ul>`}
     `;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'xof-tree-item': XofTreeItem;
+  }
+}
+
+declare global {
+  interface HTMLElementEventMap {
+    'item-expanded': CustomEvent;
+    'item-selected': CustomEvent;
   }
 }

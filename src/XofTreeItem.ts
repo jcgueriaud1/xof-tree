@@ -179,3 +179,9 @@ export class XofTreeItem extends LitElement {
     `;
   }
 }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'xof-tree-item': XofTreeItem;
+  }
+}
