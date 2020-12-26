@@ -2,17 +2,17 @@
   {
     'repeat(5, 30)': {
       expanded: '{{bool()}}',
-      name: '{{surname()}}',
+      itemdata: '{{surname()}}',
 
       children: [
         {
           'repeat(10,20)': {
             expanded: '{{bool()}}',
-      		name: '{{surname()}}',
+      		itemdata: '{{surname()}}',
              children: [
               {
                 'repeat(5)': {
-                  name: '{{surname()}}',
+                  itemdata: '{{surname()}}',
                 }
               }
             ]
@@ -27,26 +27,26 @@ export default {
   DATA: [
     {
       expanded: false,
-      name: 'Glenn',
+      itemdata: 'Glenn',
       children: [
         {
           expanded: false,
-          name: 'Morrow',
+          itemdata: 'Morrow',
           children: [
             {
-              name: 'Odonnell',
+              itemdata: 'Odonnell',
             },
             {
-              name: 'Solis',
+              itemdata: 'Solis',
             },
             {
-              name: 'Hansen',
+              itemdata: 'Hansen',
             },
             {
-              name: 'Galloway',
+              itemdata: 'Galloway',
             },
             {
-              name: 'Willis',
+              itemdata: 'Willis',
             },
           ],
         },

@@ -45,9 +45,9 @@ const items = [
   },
 ];
 export const SimpleStory = () => html`
-  <xof-tree title="Hello World" .items=${items}></xof-tree>
+  <xof-tree title="Hello World" .data=${items}></xof-tree>
 `;
 
 export const MultiSelectStory = () => html`
-  <xof-tree title="Hello World" .items=${items} multiselect="true"></xof-tree>
+  <xof-tree title="Hello World" .data=${items} multiselect="true"></xof-tree>
 `;

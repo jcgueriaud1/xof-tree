@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "tags": [
+    {
+      "name": "xof-tree",
+      "description": "`<xof-tree>` is a Tree element to show hierarchical data as a tree.\n\n\n### Item rendering\n\n```html\n<xof-tree id=\"tree\"></xof-tree>\n```\n```js\nconst tree = document.querySelector('#reee');\ntree.data = [{\"itemdata\": \"Branch1\",\"children\": [{\"itemdata\": \"Branch1.1\"}, {\"itemdata\": \"Branch1.2\"}]}];\n```\n\nThe following properties are available for item template bindings:\n\nProperty name | Type | Description\n--------------|------|------------\n`title`| String | Title of the tree\n`data` | TreeItemDataArray | The tree data\n`multiselect` | Boolean | True when the tree is in multiselect mode\n`renderer` | TreeItemRenderer | renderer for the item\n\n\n```javascript\n```\n\n### Styling\n\nThe following custom properties are available for styling:\n\nCustom property | Description | Default\n----------------|-------------|-------------\n\nThe following shadow DOM parts are available for styling:\n\nPart name | Description\n----------------|----------------\n\nThe following state attributes are available for styling:\n\nAttribute    | Description | Part name\n-------------|-------------|------------\n\nEvents:\n\n  * `item-selected` {`CustomEvent<any>`} - \n\n  * `item-expanded` {`CustomEvent<any>`} - \n\nSlots:\n\n  * `items` {} - To document, the tree item are added in the `items` slot\n\nAttributes:\n\n  * `title` {String} - Title of the tree\n\n  * `multiselect` {Boolean} - is tree in multi select?\n\nProperties:\n\n  * `styles` {`CSSResult`} - \n\n  * `title` {String} - Title of the tree\n\n  * `data` {TreeItemDataArray} - The tree data\n\n  * `multiselect` {Boolean} - is tree in multi select?\n\n  * `renderer` {TreeItemRenderer} - renderer for the item\n\n  * `focusedItem` {`null`} - \n\n  * `_itemsSelected` {`HasId[]`} - \n\n  * `_itemsExpanded` {`HasId[]`} - \n\n  * `_itemNodes` {`NodeListOf<XofTreeItem>`} - ",
+      "attributes": [
+        {
+          "name": "title",
+          "description": "`title` {String} - Title of the tree\n\nProperty: title\n\nDefault: "
+        },
+        {
+          "name": "multiselect",
+          "description": "`multiselect` {Boolean} - is tree in multi select?\n\nProperty: multiselect\n\nDefault: false",
+          "valueSet": "v"
+        },
+        {
+          "name": "onitem-selected",
+          "description": "`item-selected` {`CustomEvent<any>`} - "
+        },
+        {
+          "name": "onitem-expanded",
+          "description": "`item-expanded` {`CustomEvent<any>`} - "
+        }
+      ]
+    },
+    {
+      "name": "xof-tree-item",
+      "description": "Events:\n\n  * `__item-expanded` {`CustomEvent<{ expanded: boolean; item: this; }>`} - \n\n  * `__item-selected` {`CustomEvent<{ selected: boolean; item: this; }>`} - \n\nAttributes:\n\n  * `level` {`number`} - \n\n  * `multiselect` {`boolean`} - \n\n  * `selected` {`boolean`} - \n\n  * `expanded` {`boolean`} - \n\n  * `leaf` {`boolean`} - \n\nProperties:\n\n  * `styles` {`CSSResult`} - \n\n  * `itemdata` {`HasId | undefined`} - \n\n  * `level` {`number`} - \n\n  * `multiselect` {`boolean`} - \n\n  * `selected` {`boolean`} - \n\n  * `expanded` {`boolean`} - \n\n  * `leaf` {`boolean`} - \n\n  * `renderer` - \n\n  * `_label` {`HTMLElement`} - \n\n  * `_checkbox` {`HTMLInputElement`} - \n\n  * `_list` {`HTMLElement`} - \n\n  * `_itemNodes` {`NodeListOf<XofTreeItem>`} - ",
+      "attributes": [
+        {
+          "name": "level",
+          "description": "`level` {`number`} - \n\nProperty: level\n\nDefault: -1"
+        },
+        {
+          "name": "multiselect",
+          "description": "`multiselect` {`boolean`} - \n\nProperty: multiselect\n\nDefault: false",
+          "valueSet": "v"
+        },
+        {
+          "name": "selected",
+          "description": "`selected` {`boolean`} - \n\nProperty: selected\n\nDefault: false",
+          "valueSet": "v"
+        },
+        {
+          "name": "expanded",
+          "description": "`expanded` {`boolean`} - \n\nProperty: expanded\n\nDefault: false",
+          "valueSet": "v"
+        },
+        {
+          "name": "leaf",
+          "description": "`leaf` {`boolean`} - \n\nProperty: leaf\n\nDefault: false",
+          "valueSet": "v"
+        },
+        {
+          "name": "on__item-expanded",
+          "description": "`__item-expanded` {`CustomEvent<{ expanded: boolean; item: this; }>`} - "
+        },
+        {
+          "name": "on__item-selected",
+          "description": "`__item-selected` {`CustomEvent<{ selected: boolean; item: this; }>`} - "
+        }
+      ]
+    },
+    {
+      "name": "xof-tree-item",
+      "description": "Events:\n\n  * `__item-expanded` {`CustomEvent<{ expanded: boolean; item: this; }>`} - \n\n  * `__item-selected` {`CustomEvent<{ selected: boolean; item: this; }>`} - \n\nAttributes:\n\n  * `level` {`number`} - \n\n  * `multiselect` {`boolean`} - \n\n  * `selected` {`boolean`} - \n\n  * `expanded` {`boolean`} - \n\n  * `leaf` {`boolean`} - \n\nProperties:\n\n  * `styles` {`CSSResult`} - \n\n  * `itemdata` {`HasId | undefined`} - \n\n  * `level` {`number`} - \n\n  * `multiselect` {`boolean`} - \n\n  * `selected` {`boolean`} - \n\n  * `expanded` {`boolean`} - \n\n  * `leaf` {`boolean`} - \n\n  * `renderer` - \n\n  * `_label` {`HTMLElement`} - \n\n  * `_checkbox` {`HTMLInputElement`} - \n\n  * `_list` {`HTMLElement`} - \n\n  * `_itemNodes` {`NodeListOf<XofTreeItem>`} - ",
+      "attributes": [
+        {
+          "name": "level",
+          "description": "`level` {`number`} - \n\nProperty: level\n\nDefault: -1"
+        },
+        {
+          "name": "multiselect",
+          "description": "`multiselect` {`boolean`} - \n\nProperty: multiselect\n\nDefault: false",
+          "valueSet": "v"
+        },
+        {
+          "name": "selected",
+          "description": "`selected` {`boolean`} - \n\nProperty: selected\n\nDefault: false",
+          "valueSet": "v"
+        },
+        {
+          "name": "expanded",
+          "description": "`expanded` {`boolean`} - \n\nProperty: expanded\n\nDefault: false",
+          "valueSet": "v"
+        },
+        {
+          "name": "leaf",
+          "description": "`leaf` {`boolean`} - \n\nProperty: leaf\n\nDefault: false",
+          "valueSet": "v"
+        },
+        {
+          "name": "on__item-expanded",
+          "description": "`__item-expanded` {`CustomEvent<{ expanded: boolean; item: this; }>`} - "
+        },
+        {
+          "name": "on__item-selected",
+          "description": "`__item-selected` {`CustomEvent<{ selected: boolean; item: this; }>`} - "
+        }
+      ]
+    }
+  ],
+  "globalAttributes": [],
+  "valueSets": []
+}
