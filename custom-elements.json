@@ -3,20 +3,19 @@
   "tags": [
     {
       "name": "xof-tree",
-      "description": "A component to display a tree",
-      "properties": [
+      "description": "`<xof-tree>` is a Tree element to show hierarchical data as a tree.\n\n\n### Item rendering\n\n```html\n<xof-tree id=\"tree\"></xof-tree>\n```\n```js\nconst tree = document.querySelector('#reee');\ntree.data = [{\"itemdata\": \"Branch1\",\"children\": [{\"itemdata\": \"Branch1.1\"}, {\"itemdata\": \"Branch1.2\"}]}];\n```\n\nThe following properties are available for item template bindings:\n\nProperty name | Type | Description\n--------------|------|------------\n`title`| String | Title of the tree\n`data` | TreeItemDataArray | The tree data\n`multiselect` | Boolean | True when the tree is in multiselect mode\n`renderer` | TreeItemRenderer | renderer for the item\n\n\n```javascript\n```\n\n### Styling\n\nThe following custom properties are available for styling:\n\nCustom property | Description | Default\n----------------|-------------|-------------\n\nThe following shadow DOM parts are available for styling:\n\nPart name | Description\n----------------|----------------\n\nThe following state attributes are available for styling:\n\nAttribute    | Description | Part name\n-------------|-------------|------------\n\nEvents:\n\n  * `item-selected` {`CustomEvent<any>`} - \n\n  * `item-expanded` {`CustomEvent<any>`} - \n\nSlots:\n\n  * `items` {} - To document, the tree item are added in the `items` slot\n\nAttributes:\n\n  * `title` {String} - Title of the tree\n\n  * `multiselect` {Boolean} - is tree in multi select?\n\nProperties:\n\n  * `styles` {`CSSResult`} - \n\n  * `title` {String} - Title of the tree\n\n  * `data` {TreeItemDataArray} - The tree data\n\n  * `multiselect` {Boolean} - is tree in multi select?\n\n  * `renderer` {TreeItemRenderer} - renderer for the item\n\n  * `focusedItem` {`null`} - \n\n  * `_itemsSelected` {`HasId[]`} - \n\n  * `_itemsExpanded` {`HasId[]`} - \n\n  * `_itemNodes` {`NodeListOf<XofTreeItem>`} - ",
+      "attributes": [
         {
           "name": "title",
-          "type": "String",
-          "description": "The title of your component",
-          "default": "Hey there"
+          "description": "`title` {String} - Title of the tree\n\nProperty: title\n\nDefault: "
         },
         {
           "name": "multiselect",
-          "type": "Boolean",
-          "description": "Is tree in multiselect?",
-          "default": false
-        },
+          "description": "`multiselect` {Boolean} - is tree in multi select?\n\nProperty: multiselect\n\nDefault: false",
+          "valueSet": "v"
+        }
+      ],
+      "properties": [
         {
           "name": "data",
           "type": "TreeItemArray",
@@ -26,13 +25,7 @@
       ],
       "events": [],
       "slots": [],
-      "cssProperties": [
-        {
-          "name": "--xof-tree-text-color",
-          "description": "Main Text Color",
-          "type": "Color"
-        }
-      ]
+      "cssProperties": []
     }
   ]
 }

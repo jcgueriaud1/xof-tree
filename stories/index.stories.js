@@ -16,28 +16,28 @@ export default {
 
 const items = [
   {
-    name: 'Branch1',
+    itemdata: 'Branch1',
     expanded: true,
     children: [
       {
-        name: 'Branch1.1',
+        itemdata: 'Branch1.1',
         children: [
           {
-            name: 'Leaf1.1.1',
+            itemdata: 'Leaf1.1.1',
           },
           {
-            name: 'Leaf1.1.2',
+            itemdata: 'Leaf1.1.2',
           },
         ],
       },
       {
-        name: 'Branch1.2',
+        itemdata: 'Branch1.2',
         children: [
           {
-            name: 'Leaf1.2.1',
+            itemdata: 'Leaf1.2.1',
           },
           {
-            name: 'Leaf1.2.2',
+            itemdata: 'Leaf1.2.2',
           },
         ],
       },
@@ -45,9 +45,9 @@ const items = [
   },
 ];
 export const SimpleStory = () => html`
-  <xof-tree title="Hello World" .items=${data}></xof-tree>
+  <xof-tree title="Hello World" .data=${items}></xof-tree>
 `;
 
 export const MultiSelectStory = () => html`
-  <xof-tree title="Hello World" .items=${data} multiselect="true"></xof-tree>
+  <xof-tree title="Hello World" .data=${items} multiselect="true"></xof-tree>
 `;
