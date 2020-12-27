@@ -20,41 +20,39 @@
 
     const items = [
             {
-              "itemdata": "Branch1",
-              "expanded": true,
+              "itemdata": {id:1, name:"Branch1"},
               "children": [
                 {
-                  "itemdata": "Branch1.1",
+                  "itemdata": {id:11, name:"Branch1.1"},
                   "children": [
                   {
-                    "itemdata": "Leaf1.1.1"
+                    "itemdata": {id:111, name:"Leaf1.1.1"}
                   },
                   {
-                    "itemdata": "Leaf1.1.2"
+                    "itemdata": {id:112,  name:"Leaf1.1.2"}
                   }
                 ]
                 }   ,
                 {
-                  "itemdata": "Branch1.2",
-                  "expanded": true,
-                  "selected": true,
+                  "itemdata": {id:12,  name:"Branch1.2"},
                   "children": [
                   {
-                    "itemdata": "Leaf1.2.1",
-                    "selected": true
+                    "itemdata": {id:121,  name:"Leaf1.2.1"}
                   },
                   {
-                    "itemdata": "Leaf1.2.2"
+                    "itemdata": {id:122, name: "Leaf1.2.2"}
                   }
                 ]
                 }
               ]
             }
           ];
-
+          const renderer = (item) => html`${item.name}`;
+          const expanded = [1, 11]
+          const selected = [1, 12]
     render(
       html`
-        <xof-tree title=${title} .data=${items} .multiselect=${multiselect}>
+        <xof-tree title=${title} .data="${items}" multiselect="${multiselect}" .renderer="${renderer}" .idsExpanded="${expanded}" .idsSelected="${selected}">
         </xof-tree>
       `,
       document.querySelector('#demo')

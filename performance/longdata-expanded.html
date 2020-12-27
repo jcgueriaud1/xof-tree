@@ -10,7 +10,7 @@
     import * as JSON from './test-data.js';
     const title = 'Hello owc Worldsdsdsd!';
     const multiselect = false;
-     const renderer = (item) => html`+++${item}+++++`;
+    const renderer = (item) => html`${item.name}`;
 
     render(
       html`

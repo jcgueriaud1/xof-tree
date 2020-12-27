@@ -2,8 +2,6 @@
 // TYPES
 declare interface TreeItemData {
   itemdata: HasId;
-  expanded?: boolean;
-  selected?: boolean;
   children?: TreeItemDataArray;
 }
 declare type TreeItemDataArray = Array<TreeItemData>;
@@ -11,9 +9,11 @@ declare type TreeItemDataArray = Array<TreeItemData>;
 declare interface HasItemData {
   itemdata?: HasId;
 }
+
 declare interface HasId {
-  id: string;
+  id: Id;
 }
+declare type Id = string | number;
 /**
  * Fired when an item is expanded or collapsed.
  */

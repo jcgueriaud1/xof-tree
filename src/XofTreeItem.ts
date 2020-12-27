@@ -4,9 +4,10 @@ import {
   LitElement,
   property,
   query,
-  TemplateResult,
   queryAssignedNodes,
 } from 'lit-element';
+
+import { TreeItemRenderer } from './XofTree.js';
 
 export class XofTreeItem extends LitElement {
   static styles = css`
@@ -39,7 +40,7 @@ export class XofTreeItem extends LitElement {
     }
   `;
   @property({ attribute: false })
-  itemdata?: HasId;
+  itemdata: HasId = {id:0};
 
   @property({ type: Number }) level = -1;
 
@@ -56,7 +57,7 @@ export class XofTreeItem extends LitElement {
   leaf = false;
 
   @property({ attribute: false })
-  renderer: (item: HasId) => TemplateResult = (item: HasId) => html`${item}`;
+  renderer: TreeItemRenderer<HasId> = (item: HasId) => html`${item}`;
 
   @query('#label')
   private _label!: HTMLElement;
