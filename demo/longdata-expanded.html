@@ -17,16 +17,18 @@
     import '../dist/xof-tree-item.js';
     import * as JSON from './test-data.js';
     const title = 'My Tree!';
-    const multiselect = false;
+    const multiselect = true;
 
     render(
       html`
-        <xof-tree .title=${title} .data=${JSON.default.DATA} .multiselect=${multiselect}>
+        <xof-tree .title=${title} .data=${JSON.default.DATA} .multiselect=${multiselect} id="tree">
           some more light-dom
         </xof-tree>
       `,
       document.querySelector('#demo')
     );
+    document.querySelector('#tree').expandAll();
+    document.querySelector('#tree').selectAll();
   </script>
 </body>
 </html>

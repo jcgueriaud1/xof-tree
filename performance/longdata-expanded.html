@@ -14,13 +14,14 @@
 
     render(
       html`
-        <xof-tree .title=${title} .items=${JSON.default.DATA} .multiselect=${multiselect} .renderer=${renderer}>
+        <xof-tree .title="${title}" .data="${JSON.default.DATA}" .multiselect="${multiselect}" .renderer="${renderer}" id="tree">
           some more light-dom
         </xof-tree>
       `,
       document.querySelector('#demo')
     );
-  bench.stop();
+    document.querySelector('#tree').expandAll();
+    bench.stop();
 </script>
 </body>
 </html>

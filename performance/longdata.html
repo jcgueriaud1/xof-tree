@@ -2,8 +2,8 @@
 <body>
   <div id="demo"></div>
 <script type="module">
-  import * as bench from '/bench.js';
-  bench.start();
+    import * as bench from '/bench.js';
+    bench.start();
     import { html, render } from 'lit-html';
     import '../dist/xof-tree.js';
     import '../dist/xof-tree-item.js';
@@ -14,13 +14,13 @@
 
     render(
       html`
-        <xof-tree .title=${title} .items=${JSON.default.DATA} .multiselect=${multiselect} .renderer=${renderer}>
+        <xof-tree .title=${title} .data=${JSON.default.DATA} .multiselect=${multiselect} .renderer=${renderer}>
           some more light-dom
         </xof-tree>
       `,
       document.querySelector('#demo')
     );
-  bench.stop();
+    bench.stop();
 </script>
 </body>
 </html>
