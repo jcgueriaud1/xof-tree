@@ -10,17 +10,18 @@
     import * as JSON from './test-data.js';
     const title = 'Hello owc Worldsdsdsd!';
     const multiselect = false;
-     const renderer = (item) => html`+++${item}+++++`;
+    const renderer = (item) => html`${item.name}`;
 
     render(
       html`
-        <xof-tree .title=${title} .items=${JSON.default.DATA} .multiselect=${multiselect} .renderer=${renderer}>
+        <xof-tree .title="${title}" .data="${JSON.default.DATA}" .multiselect="${multiselect}" .renderer="${renderer}" id="tree">
           some more light-dom
         </xof-tree>
       `,
       document.querySelector('#demo')
     );
-  bench.stop();
+    document.querySelector('#tree').expandAll();
+    bench.stop();
 </script>
 </body>
 </html>

@@ -10,10 +10,11 @@
     import * as JSON from './test-data.js';
     const title = 'Hello owc Worldsdsdsd!';
     const multiselect = true;
+    const renderer = (item) => html`${item.name}`;
 
     render(
       html`
-        <xof-tree .title=${title} .items=${JSON.default.DATA} .multiselect=${multiselect}>
+        <xof-tree .title=${title} .data=${JSON.default.DATA} .multiselect=${multiselect} .renderer=${renderer}>
           some more light-dom
         </xof-tree>
       `,

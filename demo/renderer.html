@@ -16,8 +16,6 @@
     import '../dist/xof-tree.js';
     import '../dist/xof-tree-item.js';
 
-    const title = 'Hello owc Worldsdsdsd!';
-
     const items = [
             {
               "itemdata": "Branch1",
@@ -52,7 +50,7 @@
 
     render(
       html`
-        <xof-tree .title=${title} .data=${items} .renderer=${renderer}>
+        <xof-tree .data=${items} .renderer=${renderer}>
           some more light-dom
         </xof-tree>
       `,

@@ -1,11 +1,11 @@
-import { html, nothing } from 'lit-html';
 import {
   css,
   LitElement,
+  TemplateResult,
   property,
   queryAssignedNodes,
-  TemplateResult,
 } from 'lit-element';
+import { html, nothing } from 'lit-html';
 import { XofTreeItem } from './XofTreeItem.js';
 
 /**
@@ -92,11 +92,10 @@ export class XofTree extends LitElement {
     }
   `;
 
- /**
-  * Title of the tree
-  * @type {String}
-  * @attr
-  */
+  /**
+   * Title of the tree
+   * @attr
+   */
   @property({ type: String }) title = '';
 
   /**
@@ -109,24 +108,25 @@ export class XofTree extends LitElement {
   /**
    * is tree in multi select?
    *
-   * @type {Boolean}
    * @attr
    */
   @property({ type: Boolean }) multiselect = false;
 
   /**
    * renderer for the item
-   * @type {TreeItemRenderer}
+   * @type {TreeItemRenderer<HasId>}
    * @prop
    */
   @property({ attribute: false })
-  renderer: TreeItemRenderer = (item: HasId) => html`${item}`;
+  renderer: TreeItemRenderer<HasId> = (item: HasId) => html`${item.id}`;
 
   @property({ attribute: false }) focusedItem = null;
 
-  private _itemsSelected: Array<HasId> = [];
+  @property({ attribute: false })
+  public idsSelected: Array<Id> = [];
 
-  private _itemsExpanded: Array<HasId> = [];
+  @property({ attribute: false })
+  public idsExpanded: Array<Id> = [];
 
   @queryAssignedNodes('items', true)
   private _itemNodes!: NodeListOf<XofTreeItem>;
@@ -139,38 +139,31 @@ export class XofTree extends LitElement {
 
   private handleItemSelected(e1: Event) {
     const e = e1 as CustomEvent<{ selected: boolean; item: XofTreeItem }>;
-    const _oldItemsSelected = [...this._itemsSelected];
+    const _oldItemsSelected = [...this.idsSelected];
     if (e.detail.selected) {
-      this.select(itemdata => e.detail.item.itemdata! == itemdata);
-      this._itemsSelected.push(e.detail.item.itemdata!);
+      this.selectId(e.detail.item.itemdata!.id);
     } else {
-      this.deselect(itemdata => e.detail.item.itemdata! == itemdata);
-      const idx = this._itemsSelected.indexOf(e.detail.item.itemdata!);
-      this._itemsSelected = this._itemsSelected.filter(
-        (item, index) => index !== idx
-      );
+      this.deselectId(e.detail.item.itemdata!.id);
     }
+
     const event = new CustomEvent('item-selected', {
-      detail: { old: _oldItemsSelected, new: this._itemsSelected },
+      detail: { old: _oldItemsSelected, new: this.idsSelected },
     });
     this.dispatchEvent(event);
   }
 
   private handleItemExpanded(e1: Event) {
     const e = e1 as CustomEvent<{ expanded: boolean; item: XofTreeItem }>;
-    const _oldItemsExpanded = [...this._itemsExpanded];
+    const _oldItemsExpanded = [...this.idsExpanded];
+
     if (e.detail.expanded) {
-      this.expand(itemdata => e.detail.item.itemdata! == itemdata);
-      this._itemsExpanded.push(e.detail.item.itemdata!);
+      this.expandId(e.detail.item.itemdata!.id);
     } else {
-      this.collapse(itemdata => e.detail.item.itemdata! == itemdata);
-      const idx = this._itemsExpanded.indexOf(e.detail.item.itemdata!);
-      this._itemsExpanded = this._itemsExpanded.filter(
-        (item, index) => index !== idx
-      );
+      this.collapseId(e.detail.item.itemdata!.id);
     }
+
     const event = new CustomEvent('item-expanded', {
-      detail: { old: _oldItemsExpanded, new: this._itemsExpanded },
+      detail: { old: _oldItemsExpanded, new: this.idsExpanded },
     });
     this.dispatchEvent(event);
   }
@@ -218,7 +211,7 @@ export class XofTree extends LitElement {
       case 'Left': // IE/Edge specific value
       case 'ArrowLeft':
         if (treeitem.expanded) {
-          this.collapse(itemdata => itemdata == treeitem.itemdata);
+          this.collapseId(treeitem.itemdata!.id);
         } else {
           // go to next item
           this.navigateToParentItem(treeitem);
@@ -238,7 +231,7 @@ export class XofTree extends LitElement {
 
   private _loadTreeItem(treeitem: XofTreeItem) {
     if (treeitem.childElementCount == 0) {
-      this.expand(itemdata => itemdata == treeitem.itemdata);
+      this.expandId(treeitem.itemdata!.id);
     }
   }
 
@@ -248,9 +241,7 @@ export class XofTree extends LitElement {
     if (nextElement) {
       nextElement.focus();
     } else {
-      const parentElement = treeitem.parentElement!.closest(
-        'xof-tree-item'
-      );
+      const parentElement = treeitem.parentElement!.closest('xof-tree-item');
       if (parentElement) {
         this.navigateToNextItem(parentElement);
       }
@@ -266,9 +257,7 @@ export class XofTree extends LitElement {
         previousElement.focus();
       }
     } else {
-      const parentElement = treeitem.parentElement!.closest(
-        'xof-tree-item'
-      );
+      const parentElement = treeitem.parentElement!.closest('xof-tree-item');
       if (parentElement) {
         parentElement.focus();
       }
@@ -281,39 +270,28 @@ export class XofTree extends LitElement {
   }
 
   navigateToParentItem(treeitem: XofTreeItem) {
-    const parentElement = treeitem.parentElement!.closest(
-      'xof-tree-item'
-    );
+    const parentElement = treeitem.parentElement!.closest('xof-tree-item');
     if (parentElement) {
       parentElement.focus();
     }
   }
 
-  _isleaf(children?: TreeItemDataArray) {
-    return !(children && children.length > 0);
+  _isleaf(item: TreeItemData) {
+    return !(item.children && item.children.length > 0);
   }
 
   /**
    * Collapse all the nodes
    */
   public collapseAll() {
-    this.collapse(() => true);
+    this.idsExpanded = [];
   }
 
   /**
    * Expand all the nodes
    */
   public expandAll() {
-    this.expand(() => true);
-  }
-
-  /**
-   * Collapse the node that fits the condition
-   *
-   * @param condition condition to collapse the node
-   */
-  public collapse(condition: (item: HasId) => boolean) {
-    this.data = this.__expandOrCollapseIf(this.data, false, condition);
+    this.idsExpanded = this.__getAllFolderId(this.data);
   }
 
   /**
@@ -322,7 +300,7 @@ export class XofTree extends LitElement {
    * @param item item to collapse
    */
   public collapseItem(item: HasId) {
-    this.collapse( (item1) => item1.id === item.id);
+    this.collapseId(item.id);
   }
 
   /**
@@ -330,16 +308,8 @@ export class XofTree extends LitElement {
    *
    * @param id id to collapse
    */
-  public collapseId(id: string) {
-    this.collapse( (item1) => item1.id === id);
-  }
-  /**
-   * Collapse the node that fits the condition
-   *
-   * @param condition condition to collapse the node
-   */
-  public expand(condition: (item: HasId) => boolean) {
-    this.data = this.__expandOrCollapseIf(this.data, true, condition);
+  public collapseId(id: Id) {
+    this.idsExpanded = this.__expandOrCollapseIf(this.idsExpanded, false, id);
   }
 
   /**
@@ -348,50 +318,31 @@ export class XofTree extends LitElement {
    * @param item item to expand
    */
   public expandItem(item: HasId) {
-    this.expand( (item1) => item1.id === item.id);
+    this.expandId(item.id);
   }
   /**
    * expand the item id
    *
    * @param id id to expand
    */
-  public expandId(id: string) {
-    this.expand( (item1) => item1.id === id);
+  public expandId(id: Id) {
+    this.idsExpanded = this.__expandOrCollapseIf(this.idsExpanded, true, id);
   }
 
-  private __expandOrCollapseIf(
-    items: TreeItemDataArray,
-    expanded: boolean,
-    condition: (item: HasId) => boolean
-  ) {
-    return items.map(item => {
-      if (item.children) {
-        return {
-          itemdata: item.itemdata,
-          selected: item.selected,
-          expanded: condition(item.itemdata) ? expanded : item.expanded,
-          children: this.__expandOrCollapseIf(
-            item.children,
-            expanded,
-            condition
-          ),
-        };
-      } else {
-        return { itemdata: item.itemdata, selected: item.selected };
-      }
-    });
+  private __expandOrCollapseIf(itemsExpanded: Id[], expanded: boolean, id: Id) {
+    if (expanded) {
+      return [...itemsExpanded, id];
+    } else {
+      return itemsExpanded.filter(tid => tid !== id);
+    }
   }
 
   public selectAll() {
-    this.select(() => true);
+    this.idsSelected = this.__getAllIds(this.data);
   }
 
   public deselectAll() {
-    this.deselect(() => true);
-  }
-
-  public select(condition: (item: HasId) => boolean) {
-    this.data = this.__selectOrSelectIf(this.data, true, condition);
+    this.idsSelected = [];
   }
 
   /**
@@ -400,19 +351,15 @@ export class XofTree extends LitElement {
    * @param item item to select
    */
   public selectItem(item: HasId) {
-    this.select( (item1) => item1.id === item.id);
+    this.selectId(item.id);
   }
   /**
    * select the item id
    *
    * @param id id to select
    */
-  public selectId(id: string) {
-    this.select( (item1) => item1.id === id);
-  }
-
-  public deselect(condition: (item: HasId) => boolean) {
-    this.data = this.__selectOrSelectIf(this.data, false, condition);
+  public selectId(id: Id) {
+    this.idsSelected = this.__selectOrDeselectIf(this.idsSelected, true, id);
   }
 
   /**
@@ -421,37 +368,53 @@ export class XofTree extends LitElement {
    * @param item item to deselect
    */
   public deselectItem(item: HasId) {
-    this.deselect( (item1) => item1.id === item.id);
+    this.deselectId(item.id);
   }
   /**
    * deselect the item id
    *
    * @param id id to deselect
    */
-  public deselectId(id: string) {
-    this.deselect( (item1) => item1.id === id);
+  public deselectId(id: Id) {
+    this.idsSelected = this.__selectOrDeselectIf(this.idsSelected, false, id);
   }
 
-  private __selectOrSelectIf(
-    items: TreeItemDataArray,
-    selected: boolean,
-    condition: (item: HasId) => boolean
-  ) {
-    return items.map(item => {
-      if (item.children) {
-        return {
-          itemdata: item.itemdata,
-          expanded: item.expanded,
-          selected: condition(item.itemdata) ? selected : item.selected,
-          children: this.__selectOrSelectIf(item.children, selected, condition),
-        };
-      } else {
-        return {
-          itemdata: item.itemdata,
-          selected: condition(item.itemdata) ? selected : item.selected,
-        };
+  private __selectOrDeselectIf(itemsExpanded: Id[], selected: boolean, id: Id) {
+    if (selected) {
+      return [...itemsExpanded, id];
+    } else {
+      return itemsExpanded.filter(tid => tid !== id);
+    }
+  }
+
+  isExpanded(item: HasId) {
+    return this.idsExpanded.includes(item.id);
+  }
+
+  isSelected(item: HasId) {
+    return this.idsSelected.includes(item.id);
+  }
+
+  private __getAllFolderId(data: TreeItemDataArray) {
+    const folderIds: Id[] = [];
+    data.forEach(item => {
+      if (!this._isleaf(item)) {
+        folderIds.push(item.itemdata.id);
+        folderIds.push(...this.__getAllFolderId(item.children!));
       }
     });
+    return folderIds;
+  }
+
+  private __getAllIds(data: TreeItemDataArray) {
+    const folderIds: Id[] = [];
+    data.forEach(item => {
+      folderIds.push(item.itemdata.id);
+      if (!this._isleaf(item)) {
+        folderIds.push(...this.__getAllIds(item.children!));
+      }
+    });
+    return folderIds;
   }
 
   renderItems(
@@ -464,13 +427,13 @@ export class XofTree extends LitElement {
         return html`<xof-tree-item
           .itemdata=${item.itemdata}
           .item=${item}
-          ?expanded=${item.expanded}
-          ?selected=${item.selected}
-          ?leaf=${this._isleaf(item.children)}
+          ?expanded=${this.isExpanded(item.itemdata)}
+          ?selected=${this.isSelected(item.itemdata)}
+          ?leaf=${this._isleaf(item)}
           ?multiselect=${multiselect}
           .renderer=${this.renderer}
         >
-          ${this._isleaf(item.children) || !item.expanded
+          ${this._isleaf(item) || !this.isExpanded(item.itemdata)
             ? nothing
             : html`<div slot="items">
                 ${this.renderItems(item.children!, level + 1, multiselect)}
@@ -511,13 +474,11 @@ export class XofTree extends LitElement {
     super.addEventListener(type, listener, options);
   }
 
-
   public removeEventListener<K extends keyof XofTreeEventMap>(
     type: K,
     listener: (this: XofTree, ev: XofTreeEventMap[K]) => void,
     options?: boolean | EventListenerOptions
   ): void;
-
 
   public removeEventListener(
     type: string,
@@ -528,10 +489,48 @@ export class XofTree extends LitElement {
   }
 }
 
-declare type TreeItemRenderer = (item: HasId) => TemplateResult;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'xof-tree-item': XofTreeItem;
-  }
+// TYPES
+export declare interface TreeItemData {
+  itemdata: HasId;
+  children?: TreeItemDataArray;
 }
+export declare type TreeItemDataArray = Array<TreeItemData>;
+
+export declare interface HasItemData {
+  itemdata?: HasId;
+}
+
+export declare interface HasId {
+  id: Id;
+}
+export declare type Id = string | number;
+/**
+ * Fired when an item is expanded or collapsed.
+ */
+export declare type XofTreeItemExpanded<T> = CustomEvent<{
+  old: T[];
+  new: T[];
+}>;
+
+/**
+ * Fired when an item is selected or deselected.
+ */
+export declare type XofTreeItemSelected<T> = CustomEvent<{
+  old: T[];
+  new: T[];
+}>;
+
+export declare interface XofTreeElementEventMap {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'item-expanded': XofTreeItemExpanded<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'item-selected': XofTreeItemSelected<any>;
+  /** Intenal events */
+  '__item-selected': CustomEvent<{ selected: boolean; item: HasItemData }>;
+  '__item-expanded': CustomEvent<{ expanded: boolean; item: HasItemData }>;
+}
+export declare type TreeItemRenderer<T> = (item: T) => TemplateResult;
+
+export declare interface XofTreeEventMap
+  extends HTMLElementEventMap,
+    XofTreeElementEventMap {}
