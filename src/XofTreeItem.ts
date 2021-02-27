@@ -1,13 +1,12 @@
-import { html, nothing } from 'lit-html';
 import {
   css,
   LitElement,
   property,
-  query,
   queryAssignedNodes,
+  query,
 } from 'lit-element';
-
-import { TreeItemRenderer } from './XofTree.js';
+import { html, nothing } from 'lit-html';
+import { HasId, TreeItemRenderer } from './XofTree.js';
 
 export class XofTreeItem extends LitElement {
   static styles = css`
@@ -40,7 +39,7 @@ export class XofTreeItem extends LitElement {
     }
   `;
   @property({ attribute: false })
-  itemdata: HasId = {id:0};
+  itemdata: HasId = { id: 0 };
 
   @property({ type: Number }) level = -1;
 
@@ -178,11 +177,5 @@ export class XofTreeItem extends LitElement {
             </ul>`}
       </li>
     `;
-  }
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'xof-tree-item': XofTreeItem;
   }
 }
