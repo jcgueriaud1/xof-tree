@@ -1,12 +1,7 @@
-import {
-  css,
-  LitElement,
-  TemplateResult,
-  property,
-  queryAssignedNodes,
-} from 'lit-element';
-import { html, nothing } from 'lit-html';
-import { XofTreeItem } from './XofTreeItem.js';
+import { html, css, LitElement, TemplateResult, nothing } from 'lit';
+import { property, queryAssignedNodes } from 'lit/decorators.js';
+
+import type { XofTreeItem } from './XofTreeItem.js';
 
 /**
  *

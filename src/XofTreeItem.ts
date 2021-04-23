@@ -1,12 +1,7 @@
-import {
-  css,
-  LitElement,
-  property,
-  queryAssignedNodes,
-  query,
-} from 'lit-element';
-import { html, nothing } from 'lit-html';
-import { HasId, TreeItemRenderer } from './XofTree.js';
+import { html, css, LitElement, TemplateResult, nothing } from 'lit';
+import { property, queryAssignedNodes, query } from 'lit/decorators.js';
+
+import type { HasId, TreeItemRenderer } from './XofTree.js';
 
 export class XofTreeItem extends LitElement {
   static styles = css`
@@ -73,7 +68,7 @@ export class XofTreeItem extends LitElement {
   /**
    * Probably better to send an event that is catched in the tree
    */
-  clickHandler() {
+  clickHandler(): void {
     if (!this.leaf) {
       const event = new CustomEvent('__item-expanded', {
         detail: { expanded: !this.expanded, item: this },
@@ -86,17 +81,17 @@ export class XofTreeItem extends LitElement {
   /**
    * Probably better to send an event that is catched in the tree
    */
-  labelClickHandler() {
+  labelClickHandler(): void {
     if (this.multiselect) {
       this.toggleSelection();
     }
   }
 
-  cssClassName() {
+  cssClassName(): string {
     return 'lbl';
   }
 
-  cssExpanderClassName() {
+  cssExpanderClassName(): string {
     if (this.leaf) {
       return 'leaf';
     } else {
@@ -108,16 +103,16 @@ export class XofTreeItem extends LitElement {
     }
   }
 
-  focus() {
+  focus(): void {
     this._label.focus();
     this.tabIndex = 0;
   }
 
-  focusFirstChild() {
+  focusFirstChild(): void {
     (this._itemNodes[0].firstElementChild as XofTreeItem).focus();
   }
 
-  focusLastChild() {
+  focusLastChild(): void {
     const child = this._itemNodes[0].lastElementChild as XofTreeItem;
     if (child.expanded) {
       child.focusLastChild();
@@ -126,7 +121,7 @@ export class XofTreeItem extends LitElement {
     }
   }
 
-  toggleSelection() {
+  toggleSelection(): void {
     this._checkbox.checked = !this._checkbox.checked;
     const event = new CustomEvent('__item-selected', {
       detail: { selected: this._checkbox.checked, item: this },
@@ -135,7 +130,7 @@ export class XofTreeItem extends LitElement {
     parent.dispatchEvent(event);
   }
 
-  msClicked() {
+  msClicked(): void {
     /**
      * send event item checked
      */
@@ -146,7 +141,7 @@ export class XofTreeItem extends LitElement {
     parent.dispatchEvent(event);
   }
 
-  render() {
+  render(): TemplateResult {
     return html`
       <li role="treeitem" aria-expanded="${this.expanded}">
         <span

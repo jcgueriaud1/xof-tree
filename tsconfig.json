@@ -16,7 +16,8 @@
     "rootDir": "./",
     "declaration": true,
     "resolveJsonModule": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "importsNotUsedAsValues": "error"
   },
   "include": ["**/*.ts"]
 }
