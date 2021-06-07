@@ -1,6 +1,6 @@
 import { html, fixture, expect } from '@open-wc/testing';
 
-import { XofTree } from '../src/XofTree.js';
+import type { XofTree } from '../src/XofTree.js';
 import '../xof-tree.js';
 
 import * as JSON from '../test/test-data.js';
